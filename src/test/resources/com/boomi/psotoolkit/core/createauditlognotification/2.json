@@ -1,0 +1,21 @@
+{
+	"Auditlogitem": [
+		{
+			"Level": "LOG",
+			"Id": "1",
+			"Timestamp": "2024-07-01T09:40:15.389Z",
+			"Step": "Error",
+			"Details": "Test it",
+			"DocType": "json",
+			"DocBase64": "eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0="
+		},
+		{
+			"Level": "LOG",
+			"Id": "2",
+			"Timestamp": "2024-07-01T09:40:15.389Z",
+			"Step": "Warning",
+			"Details": "Test it again",
+			"DocType": "json"
+		}
+	]
+}
