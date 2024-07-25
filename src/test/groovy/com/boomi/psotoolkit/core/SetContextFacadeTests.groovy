@@ -23,5 +23,7 @@ class SetContextFacadeTests extends BaseTests {
 		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/core/any");
 
 		new SetContextFacade(dataContext).execute();
+
+		assert "Mock/Folder/Testit".equals(ExecutionUtil.getDynamicProcessProperty("DPP_FWK_Directory"));
 	}
 }

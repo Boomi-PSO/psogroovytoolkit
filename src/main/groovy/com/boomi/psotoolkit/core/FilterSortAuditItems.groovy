@@ -18,8 +18,16 @@ import com.boomi.execution.ExecutionUtil;
  **/
 class FilterSortAuditItems {
 	// Constants
-	private final static String DDP_FWK_SORT_TS = "document.dynamic.userdefined.DDP_FWK_SORT_TS";
-	private final static String DDP_FWK_LEVEL = "document.dynamic.userdefined.DDP_FWK_LEVEL";
+	private static final String DDP_FWK_SORT_TS = "document.dynamic.userdefined.DDP_FWK_SORT_TS";
+	private static final String DDP_FWK_LEVEL = "document.dynamic.userdefined.DDP_FWK_LEVEL"
+	private static final String LOG = "LOG"
+	private static final String DPP_FWK_DISABLE_AUDIT = "DPP_FWK_DISABLE_AUDIT"
+	private static final String DPP_FWK_DISABLE_NOTIFICATION = "DPP_FWK_DISABLE_NOTIFICATION"
+	private static final String DPP_FWK_ERROR_LEVEL = "DPP_FWK_ERROR_LEVEL"
+	private static final String DPP_FWK_WARN_LEVEL = "DPP_FWK_WARN_LEVEL"
+	private static final String NO = "0"
+	private static final String YES = "1"
+	private static final String TRUE = "true";
 	// Setup global objects
 	private def logger = ExecutionUtil.getBaseLogger();
 	private def dataContext;
@@ -31,48 +39,39 @@ class FilterSortAuditItems {
 	public void execute() {
 		boolean fullLog = false;
 		boolean auditLog = false;
-		String disableAudit = ExecutionUtil.getDynamicProcessProperty("DPP_FWK_DISABLE_AUDIT");
+		String disableAudit = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_AUDIT);
 		logger.fine("disableAudit = " + disableAudit);
-		String disableNotify = ExecutionUtil.getDynamicProcessProperty("DPP_FWK_DISABLE_NOTIFICATION");
+		String disableNotify = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_NOTIFICATION);
 		logger.fine("disableNotify = " + disableNotify);
-		String errorFlag = ExecutionUtil.getDynamicProcessProperty("DPP_FWK_ERROR_LEVEL");
+		String errorFlag = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_ERROR_LEVEL);
 		logger.fine("errorFlag = " + errorFlag);
-		String warnFlag = ExecutionUtil.getDynamicProcessProperty("DPP_FWK_WARN_LEVEL");
+		String warnFlag = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_WARN_LEVEL);
 		logger.fine("warnFlag = " + warnFlag);
-		if (disableAudit.equals("0") && disableNotify.equals("0")) {
-			fullLog = true;
+		if (NO.equals(disableAudit) && NO.equals(disableNotify)) {
+			fullLog = TRUE;
 		}
-		else if (((errorFlag != null && errorFlag.equals("true")) || (warnFlag != null && warnFlag.equals("true"))) && disableNotify.equals("0")) {
-			fullLog = true;
+		else if (((TRUE.equals(errorFlag)) || (TRUE.equals(warnFlag))) && NO.equals(disableNotify)) {
+			fullLog = TRUE;
 		}
-		else if (disableAudit.equals("0") && disableNotify.equals("1")) {
-			auditLog = true;
+		else if (NO.equals(disableAudit) && YES.equals(disableNotify)) {
+			auditLog = TRUE;
 		}
 		logger.fine("fulllog = " + fullLog);
 		logger.fine("auditlog = " + auditLog);
-		try {
-			// Init temp collections
-			SortedMap sortedMap = new TreeMap();
-
-			// Loop through documents and store the sort-by-values and document indices in the sortedMap.
-			for ( int i = 0; i < dataContext.getDataCount(); i++ ) {
-				Properties props = dataContext.getProperties(i);
-				String sortByValue = props.getProperty(DDP_FWK_SORT_TS) + "_" + i;
-				sortedMap.put(sortByValue, i);
+		// Init temp collections
+		SortedMap sortedMap = new TreeMap();
+		// Loop through documents and store the sort-by-values and document indices in the sortedMap.
+		for ( int i = 0; i < dataContext.getDataCount(); i++ ) {
+			Properties props = dataContext.getProperties(i);
+			String sortByValue = props.getProperty(DDP_FWK_SORT_TS) + i;
+			sortedMap.put(sortByValue, i);
+		}
+		// Output sorted docs
+		sortedMap.values().each { int index ->
+			String level = dataContext.getProperties(index).getProperty(DDP_FWK_LEVEL);
+			if (fullLog || LOG.equals(level)) {
+				dataContext.storeStream(dataContext.getStream(index), dataContext.getProperties(index));
 			}
-			// Output sorted docs
-			sortedMap.values().each { int index ->
-				String level = dataContext.getProperties(index).getProperty(DDP_FWK_LEVEL);
-				if (fullLog || (auditLog && level != null && level.equals("LOG"))) {
-					dataContext.storeStream(dataContext.getStream(index), dataContext.getProperties(index));
-				}
-			}
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			logger.info(sw.toString());
-			throw new Exception(e.getMessage() + "\nCheck process log for stack trace.");
 		}
 	}
 }
