@@ -1,19 +1,19 @@
 package com.boomi.psotoolkit.core
 
 import com.boomi.execution.ExecutionUtil;
-class GetExecDuration {
+class GetExecDuration extends BaseCommand {
 	// Constants
-	private final static String DPP_FWK_STARTTIME = "DPP_FWK_StartTime";
-	private final static String DPP_FWK_EXEC_DURATION_MSEC = "DPP_FWK_EXEC_DURATION_MSEC";
-	// Setup global objects
-	private def logger = ExecutionUtil.getBaseLogger();
-	private def dataContext;
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String DPP_FWK_STARTTIME = "DPP_FWK_StartTime";
+	private static final String DPP_FWK_EXEC_DURATION_MSEC = "DPP_FWK_EXEC_DURATION_MSEC";
 
 	public GetExecDuration(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
+		logScriptName(SCRIPT_NAME);
 		String startIime = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_STARTTIME);
 		if (startIime != null && startIime.length() > 0) {
 			long diffInMillies = Math.abs((new Date()).getTime() - Long.parseLong(startIime));

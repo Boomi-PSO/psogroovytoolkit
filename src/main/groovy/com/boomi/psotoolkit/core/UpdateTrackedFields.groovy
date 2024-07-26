@@ -11,31 +11,31 @@ import com.boomi.execution.ExecutionUtil;
 //      DDP_FWK_ErrorMessage error message if invalid key/val pair input
 //
 
-class UpdateTrackedFields {
+class UpdateTrackedFields extends BaseCommand {
 	// Constants
-	private final static String DDP_PATH = "document.dynamic.userdefined.";
-	private final static String DDP_FWK_TRACKING_KEY = "document.dynamic.userdefined.DDP_FWK_Tracking_Key";
-	private final static String DDP_FWK_TRACKING_VAL = "document.dynamic.userdefined.DDP_FWK_Tracking_Val";
-	private final static String DDP_FWK_VALIDKEYVALUEPAIRS = "document.dynamic.userdefined.DDP_FWK_ValidKeyValuePairs";
-	private final static String DDP_FWK_ERRORMSG = "document.dynamic.userdefined.DDP_FWK_ErrorMessage";
-	private final static String KEY = "Key";
-	private final static String VAL = "Val";
-	private final static String DPP_FWK_TRACKEDFIELDS = "DPP_FWK_TrackedFields";
-	private final static String COMMA = ",";
-	private final static String HASH = "#";
-	private final static String NEW_LINE = "\n";
-	private final static String TRUE = "true";
-	private final static String FALSE = "false";
-	private final static String DDP_FWK_IGNOREUNPAIREDKEYVAL = "document.dynamic.userdefined.DDP_FWK_IgnoreUnpairedKeyVal";
-	// Setup global objects
-	private def logger = ExecutionUtil.getBaseLogger();
-	private def dataContext;
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String DDP_PATH = "document.dynamic.userdefined.";
+	private static final String DDP_FWK_TRACKING_KEY = "document.dynamic.userdefined.DDP_FWK_Tracking_Key";
+	private static final String DDP_FWK_TRACKING_VAL = "document.dynamic.userdefined.DDP_FWK_Tracking_Val";
+	private static final String DDP_FWK_VALIDKEYVALUEPAIRS = "document.dynamic.userdefined.DDP_FWK_ValidKeyValuePairs";
+	private static final String DDP_FWK_ERRORMSG = "document.dynamic.userdefined.DDP_FWK_ErrorMessage";
+	private static final String KEY = "Key";
+	private static final String VAL = "Val";
+	private static final String DPP_FWK_TRACKEDFIELDS = "DPP_FWK_TrackedFields";
+	private static final String COMMA = ",";
+	private static final String HASH = "#";
+	private static final String NEW_LINE = "\n";
+	private static final String TRUE = "true";
+	private static final String FALSE = "false";
+	private static final String DDP_FWK_IGNOREUNPAIREDKEYVAL = "document.dynamic.userdefined.DDP_FWK_IgnoreUnpairedKeyVal";
 
 	public UpdateTrackedFields(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
+		logScriptName(SCRIPT_NAME);
 		String trackedFields = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_TRACKEDFIELDS);
 		// Main document loop
 		for( int i = 0; i < dataContext.getDataCount(); i++ ) {

@@ -4,24 +4,25 @@ import com.boomi.execution.ExecutionUtil
 
 import groovy.json.JsonBuilder
 
-class CreateEnvelope {
+class CreateEnvelope extends BaseCommand {
 	// Constants
-	private final static String DPP_FWK_TRACKINGID = "DPP_FWK_TrackingId";
-	private final static String DPP_FWK_TRACKEDFIRLDS = "DPP_FWK_TrackedFields";
-	private final static String DDP_FWK_MSG_DATETIME = "document.dynamic.userdefined.DDP_FWK_MSG_Datetime";
-	private final static String DDP_FWK_MSG_ID = "document.dynamic.userdefined.DDP_FWK_MSG_Id";
-	private final static String DDP_FWK_MSG_SENDERID = "document.dynamic.userdefined.DDP_FWK_MSG_SenderId";
-	private final static String DDP_FWK_MSG_CONTENTTYPE = "document.dynamic.userdefined.DDP_FWK_MSG_ContentType";
-	private final static String DDP_FWK_MSG_REQCORRID = "document.dynamic.userdefined.DDP_FWK_MSG_RequestCorrelationId";
-	private final static String DDP_FWK_MSG_DATACLASS = "document.dynamic.userdefined.DDP_FWK_MSG_DataClassification";
-	// Setup global objects
-	private def dataContext;
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String DPP_FWK_TRACKINGID = "DPP_FWK_TrackingId";
+	private static final String DPP_FWK_TRACKEDFIRLDS = "DPP_FWK_TrackedFields";
+	private static final String DDP_FWK_MSG_DATETIME = "document.dynamic.userdefined.DDP_FWK_MSG_Datetime";
+	private static final String DDP_FWK_MSG_ID = "document.dynamic.userdefined.DDP_FWK_MSG_Id";
+	private static final String DDP_FWK_MSG_SENDERID = "document.dynamic.userdefined.DDP_FWK_MSG_SenderId";
+	private static final String DDP_FWK_MSG_CONTENTTYPE = "document.dynamic.userdefined.DDP_FWK_MSG_ContentType";
+	private static final String DDP_FWK_MSG_REQCORRID = "document.dynamic.userdefined.DDP_FWK_MSG_RequestCorrelationId";
+	private static final String DDP_FWK_MSG_DATACLASS = "document.dynamic.userdefined.DDP_FWK_MSG_DataClassification";
 
 	public CreateEnvelope(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
+		logScriptName(SCRIPT_NAME);
 		Properties props;
 		String msgDatetime;
 		String msgId;

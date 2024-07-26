@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.boomi.model.platform.Component;
 
 public class ExecutionUtil {
-
+	private static final String PROCESS_NAME = "PROCESS_NAME";
 	public static Map<String, String> dynamicProcessProperties = new HashMap<String, String>();
 	public static Map<String, String> processProperties = new HashMap<String, String>();
 	public static Map<String, String> executionProperties = new HashMap<String, String>();;
@@ -31,7 +31,11 @@ public class ExecutionUtil {
 	public static String getRuntimeExecutionProperty(String propertyName) {
 		String executionProperty = executionProperties.get(propertyName);
 		if (executionProperty == null) {
-			executionProperty = UUID.randomUUID().toString();
+			if (PROCESS_NAME.equals(propertyName)) {
+				executionProperty = "[TEST] Current Process";
+			} else {
+				executionProperty = UUID.randomUUID().toString();
+			}
 			executionProperties.put(propertyName, executionProperty);
 		}
 		return executionProperty;

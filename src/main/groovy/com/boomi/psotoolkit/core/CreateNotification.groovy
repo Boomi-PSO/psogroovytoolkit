@@ -15,47 +15,45 @@ import groovy.json.JsonBuilder;
  DPP_FWK_WARN_LEVEL- true if level WARNING found
  ************************************************************************** */
 
-class CreateNotification {
+class CreateNotification extends BaseCommand {
 	// Constants
-	private final static String SCRIPT_NAME = "CreateNotification";
-	private final static String DDP_FWK_DOC_KEY = "document.dynamic.userdefined.DDP_FWK_DOC_KEY";
-	private final static String DDP_FWK_DOC_VAL = "document.dynamic.userdefined.DDP_FWK_DOC_VAL";
-	private final static String DDP_FWK_DOC_CRUD_TYPE = "document.dynamic.userdefined.DDP_FWK_DOC_CRUD_TYPE";
-	private final static String DDP_FWK_NS_LEVEL = "document.dynamic.userdefined.DDP_FWK_NS_LEVEL";
-	private final static String DDP_FWK_NS_CLASS = "document.dynamic.userdefined.DDP_FWK_NS_CLASS";
-	private final static String DDP_FWK_NS_DOC = "document.dynamic.userdefined.DDP_FWK_NS_DOC";
-	private final static String DDP_FWK_NS_MSG = "document.dynamic.userdefined.DDP_FWK_NS_MSG";
-	private final static String DDP_FWK_NS_INTERNAL_ID = "document.dynamic.userdefined.DDP_FWK_NS_INTERNAL_ID";
-	private final static String DDP_FWK_NS_PROCESSCALLSTACK = "document.dynamic.userdefined.DDP_FWK_NS_ProcessCallStack";
-	private final static String DPP_FWK_EXEC_SUMMARY_FLAG = "DPP_FWK_EXEC_SUMMARY_FLAG";
-	private final static String DPP_FWK_ERROR_LEVEL = "DPP_FWK_ERROR_LEVEL";
-	private final static String DPP_FWK_WARN_LEVEL = "DPP_FWK_WARN_LEVEL";
-	private final static String MSG_ILLEGAL_CHARS = "[></?]";
-	private final static String WHITE_SPACES = "^\\s+|\\s+\$|\\s+(?=\\s)";
-	private final static String SPACE = " ";
-	private final static String DATE_FORMAT = "yyyyMMdd HHmmss.SSS";
-	private final static String CREATE = "CREATE";
-	private final static String UPSERT = "UPSERT";
-	private final static String UPDATE = "UPDATE";
-	private final static String DELETE = "DELETE";
-	private final static String READ = "READ";
-	private final static String TRUE = "true";
-	private final static String EMPTY_STRING = "";
-	private final static String ERROR = "ERROR";
-	private final static String WARNING = "WARNING";
-	private final static String INFO = "INFO";
-	private final static String ADVISORY_NOTIF = "AdvisoryNotification";
-	private final static String NOTIFICATION_DOC = "NOTIFICATION_DOC";
-	// Setup global objects
-	private def logger = ExecutionUtil.getBaseLogger();
-	private def dataContext;
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String DDP_FWK_DOC_KEY = "document.dynamic.userdefined.DDP_FWK_DOC_KEY";
+	private static final String DDP_FWK_DOC_VAL = "document.dynamic.userdefined.DDP_FWK_DOC_VAL";
+	private static final String DDP_FWK_DOC_CRUD_TYPE = "document.dynamic.userdefined.DDP_FWK_DOC_CRUD_TYPE";
+	private static final String DDP_FWK_NS_LEVEL = "document.dynamic.userdefined.DDP_FWK_NS_LEVEL";
+	private static final String DDP_FWK_NS_CLASS = "document.dynamic.userdefined.DDP_FWK_NS_CLASS";
+	private static final String DDP_FWK_NS_DOC = "document.dynamic.userdefined.DDP_FWK_NS_DOC";
+	private static final String DDP_FWK_NS_MSG = "document.dynamic.userdefined.DDP_FWK_NS_MSG";
+	private static final String DDP_FWK_NS_INTERNAL_ID = "document.dynamic.userdefined.DDP_FWK_NS_INTERNAL_ID";
+	private static final String DDP_FWK_NS_PROCESSCALLSTACK = "document.dynamic.userdefined.DDP_FWK_NS_ProcessCallStack";
+	private static final String DPP_FWK_EXEC_SUMMARY_FLAG = "DPP_FWK_EXEC_SUMMARY_FLAG";
+	private static final String DPP_FWK_ERROR_LEVEL = "DPP_FWK_ERROR_LEVEL";
+	private static final String DPP_FWK_WARN_LEVEL = "DPP_FWK_WARN_LEVEL";
+	private static final String MSG_ILLEGAL_CHARS = "[></?]";
+	private static final String WHITE_SPACES = "^\\s+|\\s+\$|\\s+(?=\\s)";
+	private static final String SPACE = " ";
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	private static final String CREATE = "CREATE";
+	private static final String UPSERT = "UPSERT";
+	private static final String UPDATE = "UPDATE";
+	private static final String DELETE = "DELETE";
+	private static final String READ = "READ";
+	private static final String TRUE = "true";
+	private static final String EMPTY_STRING = "";
+	private static final String ERROR = "ERROR";
+	private static final String WARNING = "WARNING";
+	private static final String INFO = "INFO";
+	private static final String ADVISORY_NOTIF = "AdvisoryNotification";
+	private static final String NOTIFICATION_DOC = "NOTIFICATION_DOC";
 
 	public CreateNotification(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
-		logger.finest('>>> Script start ' + SCRIPT_NAME);
+		logScriptName(SCRIPT_NAME);
 		int docCount = dataContext.getDataCount()
 		logger.fine("In-Document Count=" + docCount)
 		Set<String> uniqueValues = [] as Set
@@ -84,7 +82,7 @@ class CreateNotification {
 				ExecutionUtil.setDynamicProcessProperty(DPP_FWK_ERROR_LEVEL, TRUE, false);
 				logger.fine("DPP_FWK_ERROR_LEVEL = true");
 			}
-			if (WARNING.equals(level)) {
+			else if (WARNING.equals(level)) {
 				ExecutionUtil.setDynamicProcessProperty(DPP_FWK_WARN_LEVEL, TRUE, false);
 				logger.fine("DPP_FWK_WARN_LEVEL = true");
 			}

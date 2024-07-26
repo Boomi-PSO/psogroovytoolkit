@@ -1,6 +1,8 @@
 package com.boomi.execution;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class ExecutionTask {
@@ -8,6 +10,16 @@ public class ExecutionTask {
 	private UUID topLevelProcessID = UUID.randomUUID();
 	private UUID topLevelComponentID = UUID.randomUUID();
 	private Date startDate = new Date();
+
+	private List<String> processCallStack = new ArrayList<String>();
+	private int currentCallIndex = 0;
+
+	public ExecutionTask() {
+		processCallStack.add("[TEST] Level 3");
+		processCallStack.add("[TEST] Level 2");
+		processCallStack.add("[TEST] Level 1");
+		processCallStack.add("Mock Process");
+	}
 
 	public String getTopLevelExecutionId() {
 		return topLevelExecutionID.toString();
@@ -26,11 +38,16 @@ public class ExecutionTask {
 	}
 
 	public String getProcessName() {
-		return "Mock Process";
+		return processCallStack.get(currentCallIndex);
 	}
 
 	public ExecutionTask getParent() {
-		return null;
+		if (currentCallIndex == processCallStack.size() - 1) {
+			currentCallIndex = 0;
+			return null;
+		}
+		currentCallIndex++;
+		return this;
 	}
 
 	public Date getStartTime() {

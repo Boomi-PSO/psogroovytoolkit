@@ -23,49 +23,44 @@ import groovy.json.JsonSlurper;
  ------------------------------------------------
  ************************************************************************** */
 
-class SetContext {
-
+class SetContext extends BaseCommand {
 	// Constants
-	private final static String SCRIPT_NAME = "SetContext";
-	// Global
-	private final static String DPP_FWK_DISABLE_NOTIFICATION_DEFAULT = "DPP_FWK_DISABLE_NOTIFICATION_DEFAULT";
-	private final static String DPP_FWK_DISABLE_NOTIFICATION = "DPP_FWK_DISABLE_NOTIFICATION";
-	private final static String DPP_FWK_DISABLE_AUDIT_DEFAULT = "DPP_FWK_DISABLE_AUDIT_DEFAULT";
-	private final static String DPP_FWK_DISABLE_AUDIT = "DPP_FWK_DISABLE_AUDIT";
-	private final static String DPP_FWK_ENABLE_ERROR_TERM_DEFAULT = "DPP_FWK_ENABLE_ERROR_TERM_DEFAULT";
-	private final static String DPP_FWK_ENABLE_ERROR_TERM = "DPP_FWK_ENABLE_ERROR_TERM";
-	private final static String DPP_FWK_PROCESSNAME = "DPP_FWK_ProcessName";
-	private final static String DPP_FWK_PROCESSID = "DPP_FWK_ProcessId";
-	private final static String DPP_FWK_EXECUTIONID = "DPP_FWK_ExecutionId";
-	private final static String DPP_FWK_CONTAINERID = "DPP_FWK_ContainerId";
-	private final static String DPP_FWK_PROCESS_ERROR = "DPP_FWK_PROCESS_ERROR";
-	private final static String DPP_FWK_STARTTIME = "DPP_FWK_StartTime";
-	private final static String INMETHOD = "inmethod";
-	private final static String INPATH = "inpath";
-	private final static String DPP_FWK_APIURL = "DPP_FWK_APIURL";
-	private final static String DPP_FWK_TRACKEDFIELDS = "DPP_FWK_TrackedFields";
-	private final static String DPP_FWK_TF_ = "DPP_FWK_TF_"
-	private final static String DDP_INHEADER = "document.dynamic.userdefined.inheader_";
-	private final static String DPP_FWK_INHEADER_ = "DPP_FWK_inheader_";
-	private final static String HASH = "#";
-	private final static String COMMA = ",";
-	private final static String DPP_FWK_TRACKINGID = "DPP_FWK_TrackingId";
-	// Local
-	private final static String DPP_FWK_TRACKINGID_DEFAULT = "DPP_FWK_TrackingId_Default";
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String DPP_FWK_DISABLE_NOTIFICATION_DEFAULT = "DPP_FWK_DISABLE_NOTIFICATION_DEFAULT";
+	private static final String DPP_FWK_DISABLE_NOTIFICATION = "DPP_FWK_DISABLE_NOTIFICATION";
+	private static final String DPP_FWK_DISABLE_AUDIT_DEFAULT = "DPP_FWK_DISABLE_AUDIT_DEFAULT";
+	private static final String DPP_FWK_DISABLE_AUDIT = "DPP_FWK_DISABLE_AUDIT";
+	private static final String DPP_FWK_ENABLE_ERROR_TERM_DEFAULT = "DPP_FWK_ENABLE_ERROR_TERM_DEFAULT";
+	private static final String DPP_FWK_ENABLE_ERROR_TERM = "DPP_FWK_ENABLE_ERROR_TERM";
+	private static final String DPP_FWK_PROCESSNAME = "DPP_FWK_ProcessName";
+	private static final String DPP_FWK_PROCESSID = "DPP_FWK_ProcessId";
+	private static final String DPP_FWK_EXECUTIONID = "DPP_FWK_ExecutionId";
+	private static final String DPP_FWK_CONTAINERID = "DPP_FWK_ContainerId";
+	private static final String DPP_FWK_PROCESS_ERROR = "DPP_FWK_PROCESS_ERROR";
+	private static final String DPP_FWK_STARTTIME = "DPP_FWK_StartTime";
+	private static final String INMETHOD = "inmethod";
+	private static final String INPATH = "inpath";
+	private static final String DPP_FWK_APIURL = "DPP_FWK_APIURL";
+	private static final String DPP_FWK_TRACKEDFIELDS = "DPP_FWK_TrackedFields";
+	private static final String DPP_FWK_TF_ = "DPP_FWK_TF_"
+	private static final String DDP_INHEADER = "document.dynamic.userdefined.inheader_";
+	private static final String DPP_FWK_INHEADER_ = "DPP_FWK_inheader_";
+	private static final String HASH = "#";
+	private static final String COMMA = ",";
+	private static final String DPP_FWK_TRACKINGID = "DPP_FWK_TrackingId";
+	private static final String DPP_FWK_TRACKINGID_DEFAULT = "DPP_FWK_TrackingId_Default";
 	// Setup global objects
 	private JsonSlurper jsonSlurper = new JsonSlurper();
-	private def logger = ExecutionUtil.getBaseLogger();
 	private int envCount = 0
-	private def dataContext;
 
 	public SetContext(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
-
 		// Start
-		logger.finest('>>> Script start ' + SCRIPT_NAME);
+		logScriptName(SCRIPT_NAME);
 		// Start main DPPs
 		setMainDynamicProcessProperties();
 		// Number of docs
