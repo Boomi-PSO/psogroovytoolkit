@@ -12,18 +12,18 @@ package com.boomi.psotoolkit.core
 
 import com.boomi.execution.ExecutionManager;
 import com.boomi.execution.ExecutionUtil;
-class SetContextFacade {
+class SetContextFacade extends BaseCommand {
 	// Constants
-	private final static String DPP_FWK_DIRECTORY = "DPP_FWK_Directory";
-	// Setup global objects
-	private def logger = ExecutionUtil.getBaseLogger();
-	private def dataContext;
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String DPP_FWK_DIRECTORY = "DPP_FWK_Directory";
 
 	public SetContextFacade(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
+		logScriptName(SCRIPT_NAME);
 		String folderFullPath = ExecutionUtil.getComponent(ExecutionManager.getCurrent().getTopLevelComponentId())?.getFolderId()?.getName();
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_DIRECTORY, folderFullPath, false);
 

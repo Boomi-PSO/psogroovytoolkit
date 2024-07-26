@@ -1,17 +1,18 @@
 package com.boomi.psotoolkit.core
 
 import groovy.json.JsonSlurper
-class ParseEnvelope {
+class ParseEnvelope extends BaseCommand {
 	// Constants
-	private final static String UTF8 = "UTF-8";
-	// Setup global objects
-	private def dataContext;
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String UTF8 = "UTF-8";
 
 	public ParseEnvelope(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
+		logScriptName(SCRIPT_NAME);
 		for( int i = 0; i < dataContext.getDataCount(); i++ ) {
 			Properties props = dataContext.getProperties(i);
 			InputStream is = dataContext.getStream(i);

@@ -29,21 +29,22 @@ import groovy.json.JsonSlurper;
  *       DPP_FWK_TF_<key> = <value> - derived from DPP_FWK_TrackedFields
  * **************************************************************************
  **/
-class CreateAuditLogNotification {
+class CreateAuditLogNotification extends BaseCommand {
 	// Constants
-	private final static String DDP_DOCSIZE = "document.dynamic.userdefined.DDP_DocSize";
+	private static final String SCRIPT_NAME = this.getSimpleName();
+	private static final String DDP_DOCSIZE = "document.dynamic.userdefined.DDP_DocSize";
 	// Setup global objects
-	private def logger = ExecutionUtil.getBaseLogger();
 	private int auditlogProcessContextSize;
 	private String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 	private int auditlogSizeMax;
-	private def dataContext;
 
 	public CreateAuditLogNotification(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
+		logScriptName(SCRIPT_NAME);
 		// Get max size of audit log
 		String auditlogSizeMaxString = ExecutionUtil.getDynamicProcessProperty("DPP_FWK_AUDITLOG_SIZE_MAX");
 		auditlogSizeMax = (auditlogSizeMaxString && auditlogSizeMaxString.isInteger()) ? Integer.parseInt(auditlogSizeMaxString) : 9216;

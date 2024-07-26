@@ -3,8 +3,6 @@ package com.boomi.psotoolkit.core
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.boomi.execution.ExecutionUtil;
-
 import groovy.json.JsonBuilder;
 
 /* **************************************************************************
@@ -17,28 +15,27 @@ import groovy.json.JsonBuilder;
  OUT: audit log JSON document "on the flow"
  ************************************************************************** */
 
-class CreateAuditLog {
+class CreateAuditLog extends BaseCommand {
 	// Constants
-	private final static  String SCRIPT_NAME = "CreateAuditlog";
+	private static final String SCRIPT_NAME = this.getSimpleName();
 	// Global
-	private final static String DDP_FWK_LOG_DOC = "document.dynamic.userdefined.DDP_FWK_LOG_DOC";
-	private final static String DDP_FWK_LOG_TYPE = "document.dynamic.userdefined.DDP_FWK_LOG_TYPE";
-	private final static String DDP_FWK_LOG_MSG = "document.dynamic.userdefined.DDP_FWK_LOG_MSG";
-	private final static String DDP_FWK_NS_MSG_HASH = "document.dynamic.userdefined.DDP_FWK_NS_MSG_HASH";
-	private final static String DDP_FWK_NS_INTERNAL_ID = "document.dynamic.userdefined.DDP_FWK_NS_INTERNAL_ID";
-	private final static String DDP_FWK_LOG_DETAILS = "document.dynamic.userdefined.DDP_FWK_LOG_DETAILS";
-	private final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-	private final static String NOTIFICATION_DOC = "NOTIFICATION_DOC";
-	private final static String EMPTY_STRING = "";
-	private def logger = ExecutionUtil.getBaseLogger();
-	private def dataContext;
+	private static final String DDP_FWK_LOG_DOC = "document.dynamic.userdefined.DDP_FWK_LOG_DOC";
+	private static final String DDP_FWK_LOG_TYPE = "document.dynamic.userdefined.DDP_FWK_LOG_TYPE";
+	private static final String DDP_FWK_LOG_MSG = "document.dynamic.userdefined.DDP_FWK_LOG_MSG";
+	private static final String DDP_FWK_NS_MSG_HASH = "document.dynamic.userdefined.DDP_FWK_NS_MSG_HASH";
+	private static final String DDP_FWK_NS_INTERNAL_ID = "document.dynamic.userdefined.DDP_FWK_NS_INTERNAL_ID";
+	private static final String DDP_FWK_LOG_DETAILS = "document.dynamic.userdefined.DDP_FWK_LOG_DETAILS";
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	private static final String NOTIFICATION_DOC = "NOTIFICATION_DOC";
+	private static final String EMPTY_STRING = "";
 
 	public CreateAuditLog(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
-		logger.finest('>>> Script start ' + SCRIPT_NAME);
+		logScriptName(SCRIPT_NAME);
 		int docCount = dataContext.getDataCount();
 		logger.fine("In-Document Count=" + docCount)
 		Set<String> uniqueValues = [] as Set;

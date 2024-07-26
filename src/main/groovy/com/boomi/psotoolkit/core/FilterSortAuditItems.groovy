@@ -16,8 +16,9 @@ import com.boomi.execution.ExecutionUtil;
  * Output:
  *       audit log record "on the flow""- filtered and sorted
  **/
-class FilterSortAuditItems {
+class FilterSortAuditItems extends BaseCommand {
 	// Constants
+	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_FWK_SORT_TS = "document.dynamic.userdefined.DDP_FWK_SORT_TS";
 	private static final String DDP_FWK_LEVEL = "document.dynamic.userdefined.DDP_FWK_LEVEL"
 	private static final String LOG = "LOG"
@@ -28,15 +29,14 @@ class FilterSortAuditItems {
 	private static final String NO = "0"
 	private static final String YES = "1"
 	private static final String TRUE = "true";
-	// Setup global objects
-	private def logger = ExecutionUtil.getBaseLogger();
-	private def dataContext;
 
 	public FilterSortAuditItems(def dataContext) {
-		this.dataContext = dataContext;
+		super(dataContext);
 	}
 
+	@Override
 	public void execute() {
+		logScriptName(SCRIPT_NAME);
 		boolean fullLog = false;
 		boolean auditLog = false;
 		String disableAudit = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_AUDIT);
