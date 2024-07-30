@@ -29,13 +29,14 @@ import groovy.json.JsonSlurper;
  *       DPP_FWK_TF_<key> = <value> - derived from DPP_FWK_TrackedFields
  * **************************************************************************
  **/
+
 class CreateAuditLogNotification extends BaseCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_DOCSIZE = "document.dynamic.userdefined.DDP_DocSize";
 	// Setup global objects
 	private int auditlogProcessContextSize;
-	private String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+	private String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS"));
 	private int auditlogSizeMax;
 
 	public CreateAuditLogNotification(def dataContext) {

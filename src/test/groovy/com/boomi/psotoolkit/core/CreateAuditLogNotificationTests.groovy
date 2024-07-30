@@ -95,7 +95,7 @@ class CreateAuditLogNotificationTests extends BaseTests {
 		actualJson = jsluper.parseText(dataContext.getOutStreams()[1].getText())
 		String ts = actualJson.Auditlogitem[0].remove('Timestamp');
 		assert ts != null;
-		assert now.toEpochSecond(ZoneOffset.UTC) <= LocalDateTime.parse(ts, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")).toEpochSecond(ZoneOffset.UTC);
+		assert now.toEpochSecond(ZoneOffset.UTC) <= LocalDateTime.parse(ts, DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS")).toEpochSecond(ZoneOffset.UTC);
 
 		String td = actualJson.ProcessContext.remove('TruncatedData');
 		assert td != null;
@@ -147,7 +147,7 @@ class CreateAuditLogNotificationTests extends BaseTests {
 		String cd = actualJson.ProcessContext.remove('CompressedData');
 		assert cd != null;
 
-		assert now.toEpochSecond(ZoneOffset.UTC) <= LocalDateTime.parse(ts, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")).toEpochSecond(ZoneOffset.UTC);
+		assert now.toEpochSecond(ZoneOffset.UTC) <= LocalDateTime.parse(ts, DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS")).toEpochSecond(ZoneOffset.UTC);
 		assert actualJson == expectedJson;
 	}
 }
