@@ -33,7 +33,7 @@ class CreateNotification extends BaseCommand {
 	private static final String MSG_ILLEGAL_CHARS = "[></?]";
 	private static final String WHITE_SPACES = "^\\s+|\\s+\$|\\s+(?=\\s)";
 	private static final String SPACE = " ";
-	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	private static final String DATE_FORMAT = "yyyyMMdd HHmmss.SSS";
 	private static final String CREATE = "CREATE";
 	private static final String UPSERT = "UPSERT";
 	private static final String UPDATE = "UPDATE";
@@ -60,23 +60,25 @@ class CreateNotification extends BaseCommand {
 
 		for (int docNo = 0; docNo < docCount; docNo++) {
 			Properties props = dataContext.getProperties(docNo)
-
-			// *********** Document related functionality ************
+			boolean skipNotification = false;
 			String msgHash;
 			String nsMsg;
 			String docType;
 			String docbase64;
 			String key = props.getProperty(DDP_FWK_DOC_KEY) ?: EMPTY_STRING;
 			String val = props.getProperty(DDP_FWK_DOC_VAL) ?: EMPTY_STRING;
+			String level = props.getProperty(DDP_FWK_NS_LEVEL) ?: EMPTY_STRING;
 			String crud = props.getProperty(DDP_FWK_DOC_CRUD_TYPE) ?: EMPTY_STRING;
 			if (key.length() > 0 && (CREATE.equals(crud) || UPSERT.equals(crud) || UPDATE.equals(crud) || DELETE.equals(crud) || READ.equals(crud))) {
 				msgHash = String.valueOf((key+val+crud).hashCode());
 				logger.fine("notification object hash = " + msgHash);
 				ExecutionUtil.setDynamicProcessProperty(DPP_FWK_EXEC_SUMMARY_FLAG, TRUE, false);
 				logger.fine("DPP_FWK_EXEC_SUMMARY_FLAG = true");
+				if(!(WARNING.equals(level) || ERROR.equals(level))) {
+					skipNotification = true;
+				}
 			}
 			String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT))
-			String level = props.getProperty(DDP_FWK_NS_LEVEL) ?: EMPTY_STRING;
 			String code = props.getProperty(DDP_FWK_NS_CLASS) ?: EMPTY_STRING;
 			if (ERROR.equals(level)) {
 				ExecutionUtil.setDynamicProcessProperty(DPP_FWK_ERROR_LEVEL, TRUE, false);
@@ -106,7 +108,7 @@ class CreateNotification extends BaseCommand {
 
 			// ******** end of Document related functionality ********
 
-			if (msgHash && uniqueValues.add(msgHash)) {
+			if (msgHash && uniqueValues.add(msgHash) && !skipNotification) {
 				JsonBuilder builder = new JsonBuilder();
 				builder {
 					Auditlogitem([
