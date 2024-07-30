@@ -1,5 +1,9 @@
 package com.boomi.psotoolkit.core
 
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test;
@@ -45,6 +49,7 @@ class CreateNotificationTests extends BaseTests {
 	void testSuccess() {
 		dataContext.getProperties(0).put(DDP_FWK_NS_LEVEL, "ERROR");
 		dataContext.getProperties(0).put(DDP_FWK_NS_MSG, "This is a test error");
+		LocalDateTime now = LocalDateTime.now();
 
 		new CreateNotification(dataContext).execute();
 
@@ -62,6 +67,9 @@ class CreateNotificationTests extends BaseTests {
 		assert expectedJson.Auditlogitem[0].Details.equals(actualJson.Auditlogitem[0].Details);
 		assert expectedJson.Auditlogitem[0].DocType.equals(actualJson.Auditlogitem[0].DocType);
 		assert expectedJson.Auditlogitem[0].DocBase64.equals(actualJson.Auditlogitem[0].DocBase64);
+
+		String ts = actualJson.Auditlogitem[0].Timestamp;
+		assert now.toEpochSecond(ZoneOffset.UTC) <= LocalDateTime.parse(ts, DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS")).toEpochSecond(ZoneOffset.UTC);
 	}
 
 	@Test
@@ -132,6 +140,22 @@ class CreateNotificationTests extends BaseTests {
 		String ts = actualJson.Auditlogitem[0].remove('Timestamp');
 		assert ts != null;
 		assert expectedJson == actualJson;
+		assert "true".equals(ExecutionUtil.getDynamicProcessProperty(DPP_FWK_EXEC_SUMMARY_FLAG));
+	}
+
+	@Test
+	void testCRUDDeleteSkip() {
+		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_EXEC_SUMMARY_FLAG, 'false', false);
+
+		dataContext.getProperties(0).put(DDP_FWK_NS_LEVEL, "INFO");
+		dataContext.getProperties(0).put(DDP_FWK_NS_MSG, "This is a test info");
+		dataContext.getProperties(0).put(DDP_FWK_DOC_KEY, "key");
+		dataContext.getProperties(0).put(DDP_FWK_DOC_VAL, "val");
+		dataContext.getProperties(0).put(DDP_FWK_DOC_CRUD_TYPE, "DELETE");
+
+		new CreateNotification(dataContext).execute();
+
+		assert !dataContext.getOutStreams()[0]
 		assert "true".equals(ExecutionUtil.getDynamicProcessProperty(DPP_FWK_EXEC_SUMMARY_FLAG));
 	}
 }
