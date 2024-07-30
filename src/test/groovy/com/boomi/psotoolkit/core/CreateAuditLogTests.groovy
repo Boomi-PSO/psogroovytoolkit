@@ -1,5 +1,9 @@
 package com.boomi.psotoolkit.core
 
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test;
@@ -27,6 +31,7 @@ class CreateAuditLogTests extends BaseTests {
 	@Test
 	void testSuccess() {
 		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/core/createenv");
+		LocalDateTime now = LocalDateTime.now();
 
 		dataContext.getProperties(0).put(DDP_FWK_LOG_MSG, 'Error');
 		dataContext.getProperties(0).put(DDP_FWK_LOG_TYPE, 'json');
@@ -45,6 +50,9 @@ class CreateAuditLogTests extends BaseTests {
 		assert auditLog.Auditlogitem[0].DocType == "json";
 		String docBase64 = auditLog.Auditlogitem[0].DocBase64;
 		assert '{"DDP_DocumentId":"6825177154989703747","DDP_PreviousEventId":"544"}'.equals(new String(docBase64.decodeBase64()));
+
+		String ts = auditLog.Auditlogitem[0].Timestamp;
+		assert now.toEpochSecond(ZoneOffset.UTC) <= LocalDateTime.parse(ts, DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS")).toEpochSecond(ZoneOffset.UTC);
 	}
 
 	@Test
