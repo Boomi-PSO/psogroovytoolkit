@@ -37,6 +37,7 @@ class FilterSortAuditItems extends BaseCommand {
 	@Override
 	public void execute() {
 		logScriptName(SCRIPT_NAME);
+		// Setup to output nothing
 		boolean fullLog = false;
 		boolean auditLog = false;
 		String disableAudit = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_AUDIT);
@@ -47,12 +48,15 @@ class FilterSortAuditItems extends BaseCommand {
 		logger.fine("errorFlag = " + errorFlag);
 		String warnFlag = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_WARN_LEVEL);
 		logger.fine("warnFlag = " + warnFlag);
+		// if both flags are NO (do not disable), then output all
 		if (NO.equals(disableAudit) && NO.equals(disableNotify)) {
 			fullLog = TRUE;
 		}
-		else if (((TRUE.equals(errorFlag)) || (TRUE.equals(warnFlag))) && NO.equals(disableNotify)) {
+		// if disableNotify flag is NO (do not disable) and there is at least one ERROR or WARNING then output all
+		else if ((TRUE.equals(errorFlag) || TRUE.equals(warnFlag)) && NO.equals(disableNotify)) {
 			fullLog = TRUE;
 		}
+		// if disableAudit flag is NO (do not disable) and disableNotify flag is YES, only output LOG messages
 		else if (NO.equals(disableAudit) && YES.equals(disableNotify)) {
 			auditLog = TRUE;
 		}
@@ -69,7 +73,7 @@ class FilterSortAuditItems extends BaseCommand {
 		// Output sorted docs
 		sortedMap.values().each { int index ->
 			String level = dataContext.getProperties(index).getProperty(DDP_FWK_LEVEL);
-			if (fullLog || LOG.equals(level)) {
+			if (fullLog || (auditLog && LOG.equals(level))) {
 				dataContext.storeStream(dataContext.getStream(index), dataContext.getProperties(index));
 			}
 		}

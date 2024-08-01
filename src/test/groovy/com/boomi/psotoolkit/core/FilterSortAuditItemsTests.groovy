@@ -75,4 +75,56 @@ class FilterSortAuditItemsTests extends BaseTests {
 		assert dataContext.getOutProperties()[1].get(DDP_FWK_SORT_TS).equals("2024-07-02T14:17:56.541Z");
 		assert !dataContext.getOutProperties()[2];
 	}
+
+
+	@Test
+	void testSortNothing() {
+		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/core/filtersortaudititems");
+
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_DISABLE_NOTIFICATION, "1");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_DISABLE_AUDIT, "1");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_ERROR_LEVEL, "true");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_WARN_LEVEL, "true");
+
+		//ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_WARN_LEVEL, "false");
+
+		dataContext.getProperties(0).put(DDP_FWK_SORT_TS, "2024-07-02T14:17:56.541Z");
+		dataContext.getProperties(1).put(DDP_FWK_SORT_TS, "2024-07-02T14:17:52.944Z");
+		dataContext.getProperties(2).put(DDP_FWK_SORT_TS, "2024-07-02T14:17:54.823Z");
+
+		dataContext.getProperties(0).put(DDP_FWK_LEVEL, "LOG");
+		dataContext.getProperties(1).put(DDP_FWK_LEVEL, "ERROR");
+		dataContext.getProperties(2).put(DDP_FWK_LEVEL, "WARNING");
+
+		new FilterSortAuditItems(dataContext).execute();
+
+		assert !dataContext.getOutProperties()[0];
+		assert !dataContext.getOutStreams()[0];
+	}
+	@Test
+
+	void testSortAuditLogsBecauseNotification() {
+		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/core/filtersortaudititems");
+
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_DISABLE_NOTIFICATION, "0");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_DISABLE_AUDIT, "1");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_ERROR_LEVEL, "true");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_WARN_LEVEL, "true");
+
+		//ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_WARN_LEVEL, "false");
+
+		dataContext.getProperties(0).put(DDP_FWK_SORT_TS, "2024-07-02T14:17:56.541Z");
+		dataContext.getProperties(1).put(DDP_FWK_SORT_TS, "2024-07-02T14:17:52.944Z");
+		dataContext.getProperties(2).put(DDP_FWK_SORT_TS, "2024-07-02T14:17:54.823Z");
+
+		dataContext.getProperties(0).put(DDP_FWK_LEVEL, "LOG");
+		dataContext.getProperties(1).put(DDP_FWK_LEVEL, "ERROR");
+		dataContext.getProperties(2).put(DDP_FWK_LEVEL, "WARNING");
+
+		new FilterSortAuditItems(dataContext).execute();
+
+		assert dataContext.getOutProperties()[0].get(DDP_FWK_SORT_TS).equals("2024-07-02T14:17:52.944Z");
+		assert dataContext.getOutProperties()[1].get(DDP_FWK_SORT_TS).equals("2024-07-02T14:17:54.823Z");
+		assert dataContext.getOutProperties()[2].get(DDP_FWK_SORT_TS).equals("2024-07-02T14:17:56.541Z");
+	}
 }
