@@ -13,27 +13,19 @@ import groovy.json.JsonSlurper;
  * Description : This Groovy script sets dynamic process properties.
  *
  * Input:
- *       document "on the flow"
- *       DDP_DocSize - optional size in bytes of document
- *
+ *       documents - "1 to n audit logs items"
+ *       DDP_FWK_DocSize - optional size in bytes of of each document. 
+ *       					Note that supplying this value will increase performance.
+ *       					Use "Document Property > Meta Data > Size" to set this value. 
  * Output:
- *       DPP_FWK_ProcessName - top level process name
- *       DPP_FWK_ProcessId   - top level process id
- *       DPP_FWK_ExecutionId - top level execution id
- *       DPP_FWK_PROCESS_ERROR - empty string
- *       DPP_FWK_DISABLE_NOTIFICATION - if not already set then default property
- *       DPP_FWK_DISABLE_AUDIT - if not already set then default property
- *       DPP_FWK_ENABLE_ERROR_TERM - if not already set then default property
- *       DPP_FWK_APIURL - derived from default DPPs
- *       DPP_FWK_inheader_<postscript> - derived from default DDPs
- *       DPP_FWK_TF_<key> = <value> - derived from DPP_FWK_TrackedFields
+ *       document "1 consolidated document with context header and list of audit items"
  * **************************************************************************
  **/
 
 class CreateAuditLogNotification extends BaseCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
-	private static final String DDP_DOCSIZE = "document.dynamic.userdefined.DDP_DocSize";
+	private static final String DDP_FWK_DOCSIZE = "document.dynamic.userdefined.DDP_FWK_DocSize";
 	// Setup global objects
 	private int auditlogProcessContextSize;
 	private String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS"));
@@ -49,17 +41,18 @@ class CreateAuditLogNotification extends BaseCommand {
 		// Get max size of audit log
 		String auditlogSizeMaxString = ExecutionUtil.getDynamicProcessProperty("DPP_FWK_AUDITLOG_SIZE_MAX");
 		auditlogSizeMax = (auditlogSizeMaxString && auditlogSizeMaxString.isInteger()) ? Integer.parseInt(auditlogSizeMaxString) : 9216;
+		// Initialise slurper
+		JsonSlurper jSlurper = new JsonSlurper();
 		// Set up the Process Context Json Header
-		def auditlogProcessContext = getAuditlogProcessContext();
-
+		def auditlogProcessContext = getAuditlogProcessContext(jSlurper);
 		// for each document
 		for (int i = 0; i < dataContext.getDataCount(); i++) {
 			Properties props = dataContext.getProperties(i);
 			// Parse audit log items
-			def auditLogItems = new JsonSlurper().parse(dataContext.getStream(i));
+			def auditLogItems = jSlurper.parse(dataContext.getStream(i));
 			// get input document size from DDP else derive
 			int docSize = 0;
-			String docSizeProp = props.getProperty(DDP_DOCSIZE);
+			String docSizeProp = props.getProperty(DDP_FWK_DOCSIZE);
 			if (docSizeProp) {
 				docSize = docSizeProp.toInteger();
 			}
@@ -86,7 +79,7 @@ class CreateAuditLogNotification extends BaseCommand {
 	}
 
 	// return parsed audit log header - ProcessContext
-	private def getAuditlogProcessContext() {
+	private def getAuditlogProcessContext(JsonSlurper jSlurper) {
 		JsonBuilder builder = new JsonBuilder();
 		builder {
 			ProcessContext {
@@ -104,7 +97,7 @@ class CreateAuditLogNotification extends BaseCommand {
 		String auditlogProcessContextJson = builder.toString();
 		auditlogProcessContextSize = auditlogProcessContextJson.length();
 		// return parsed json
-		return new JsonSlurper().parseText(auditlogProcessContextJson);
+		return jSlurper.parseText(auditlogProcessContextJson);
 	}
 	// remove possible base64 docs form audit log
 	private int removeAttachedDocs(def auditLogItems, int startSize) {
