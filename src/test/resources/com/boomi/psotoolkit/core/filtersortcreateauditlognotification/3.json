@@ -1,0 +1,13 @@
+{
+  "Auditlogitem": [
+    {
+      "Level": "LOG",
+      "Id": "8881144415106398243",
+      "Timestamp": "20240802 074639.902",
+      "Step": "[FWK] CLOSE Context (route) (Continuation f_0)",
+      "Details": "&lt;style&gt; tr:hover {background-color: #D6EEEE;} &lt;/style&gt; &lt;p&gt;&lt;table&gt; &lt;tr&gt; &lt;th&gt;Process Id&lt;/th&gt; &lt;td&gt;0a469ebb-9079-499d-98ac-d5778373fa18&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;th&gt;Execution Id&lt;/th&gt; &lt;td&gt;execution-a9a990f3-ff83-4c41-a894-631cee177614-2024.08.02&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;th&gt;Duration (ms)&lt;/th&gt; &lt;td&gt;41697&lt;/td&gt; &lt;/tr&gt; &lt;/table&gt;&lt;/p&gt;",
+      "DocType": null,
+      "DocBase64": null
+    }
+  ]
+}

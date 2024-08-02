@@ -1,0 +1,15 @@
+{
+  "Auditlogitem": [
+    {
+      "Level": "ERROR",
+      "Id": "5886728937423444414",
+      "Timestamp": "20240802 074637.048",
+      "ProcessCallStack": "[FWK] CLOSE Context (route) (inline-test) (Continuation f_0) &gt; [FWK] CREATE Notification (facade)",
+      "Step": "Notification",
+      "ErrorClass": "TransformationError",
+      "Details": "[FWK] CLOSE Context (route) (inline-test) (Continuation f_0) - This is a test error",
+	  "DocType": "json",
+	  "DocBase64": "eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0="
+    }
+  ]
+}
