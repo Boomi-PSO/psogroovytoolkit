@@ -1,0 +1,13 @@
+{
+  "Auditlogitem": [
+    {
+      "Level": "LOG",
+      "Id": "482013909434641342",
+      "Timestamp": "20240802 074619.486",
+      "Step": "[FWK] SET Context (route)",
+      "Details": "",
+      "DocType": null,
+      "DocBase64": null
+    }
+  ]
+}
