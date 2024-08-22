@@ -27,17 +27,29 @@ class CreateAuditLogNotification extends BaseCommand {
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_FWK_DOCSIZE = "document.dynamic.userdefined.DDP_FWK_DocSize";
 	private static final String DDP_FWK_SORT_TS = "document.dynamic.userdefined.DDP_FWK_SORT_TS";
-	private static final String DDP_FWK_LEVEL = "document.dynamic.userdefined.DDP_FWK_LEVEL"
-	private static final String LOG = "LOG"
-	private static final String DPP_FWK_DISABLE_AUDIT = "DPP_FWK_DISABLE_AUDIT"
-	private static final String DPP_FWK_DISABLE_NOTIFICATION = "DPP_FWK_DISABLE_NOTIFICATION"
-	private static final String DPP_FWK_ERROR_LEVEL = "DPP_FWK_ERROR_LEVEL"
-	private static final String DPP_FWK_WARN_LEVEL = "DPP_FWK_WARN_LEVEL"
-	private static final String NO = "0"
-	private static final String YES = "1"
-	private static final String TRUE = "true"
-	private static final String DOC_BASE64 = "DocBase64"
+	private static final String DDP_FWK_LEVEL = "document.dynamic.userdefined.DDP_FWK_LEVEL";
+	private static final String DPP_FWK_DISABLE_AUDIT = "DPP_FWK_DISABLE_AUDIT";
+	private static final String DPP_FWK_DISABLE_NOTIFICATION = "DPP_FWK_DISABLE_NOTIFICATION";
+	private static final String DPP_FWK_ERROR_LEVEL = "DPP_FWK_ERROR_LEVEL";
+	private static final String DPP_FWK_WARN_LEVEL = "DPP_FWK_WARN_LEVEL";
 	private static final String DPP_FWK_AUDITLOG_SIZE_MAX = "DPP_FWK_AUDITLOG_SIZE_MAX";
+	private static final String DPP_FWK_TRACKING_ID = "DPP_FWK_TrackingId";
+	private static final String DPP_FWK_TRACKED_FIELDS = "DPP_FWK_TrackedFields";
+	private static final String DPP_FWK_CONTAINER_ID = "DPP_FWK_ContainerId";
+	private static final String DPP_FWK_EXECUTION_ID = "DPP_FWK_ExecutionId";
+	private static final String DPP_FWK_APIURL = "DPP_FWK_APIURL";
+	private static final String DPP_FWK_PROCESS_NAME = "DPP_FWK_ProcessName";
+	private static final String DPP_FWK_PROCESS_ID = "DPP_FWK_ProcessId";
+	private static final String DPP_FWK_DIRECTORY = "DPP_FWK_Directory";
+	private static final String UTF_8 = "UTF-8";
+	private static final String LOG = "LOG";
+	private static final String ERROR = 'ERROR';
+	private static final String NO = "0";
+	private static final String YES = "1";
+	private static final String TRUE = "true";
+	private static final String DOC_BASE64 = "DocBase64";
+	private static final String NOTIFICATION = 'Notification';
+	private static final String INTERNAL_ERROR = 'InternalError';
 	// Setup global objects
 	private int auditlogProcessContextSize;
 	private String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS"));
@@ -76,8 +88,11 @@ class CreateAuditLogNotification extends BaseCommand {
 		// Set up the Process Context Json Header
 		def auditlogProcessContext = getAuditlogProcessContext(jSlurper);
 		// Get sorted and filtered Map of document indexes and combine
-		Tuple combinedAuditLogItems = combineAuditLogs(jSlurper, getfilteredSortedDocuments());
-		storeAuditLogNotifications(auditlogProcessContext, combinedAuditLogItems[0], combinedAuditLogItems[1], combinedAuditLogItems[2]);
+		Map filteredSortedDocuments = getfilteredSortedDocuments();
+		if (!filteredSortedDocuments.isEmpty()) {
+			Tuple combinedAuditLogItems = combineAuditLogs(jSlurper, filteredSortedDocuments);
+			storeAuditLogNotifications(auditlogProcessContext, combinedAuditLogItems[0], combinedAuditLogItems[1], combinedAuditLogItems[2]);
+		}
 	}
 
 	private int getDocSize(Properties props, auditLogItems) {
@@ -137,7 +152,6 @@ class CreateAuditLogNotification extends BaseCommand {
 		// Setup to output nothing
 		boolean fullLog = false;
 		boolean auditLog = false;
-		Map filteredAndSorted = [:];
 		String disableAudit = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_AUDIT);
 		logger.fine("disableAudit = " + disableAudit);
 		String disableNotify = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_NOTIFICATION);
@@ -180,14 +194,14 @@ class CreateAuditLogNotification extends BaseCommand {
 		JsonBuilder builder = new JsonBuilder();
 		builder {
 			ProcessContext {
-				'TrackingId' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_TrackingId")
-				'TrackedFields' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_TrackedFields")
-				'Container' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_ContainerId")
-				'ExecutionId' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_ExecutionId")
-				'API' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_APIURL")
-				'MainProcessName' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_ProcessName")
-				'MainProcessComponentId' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_ProcessId")
-				'Folder' ExecutionUtil.getDynamicProcessProperty("DPP_FWK_Directory")
+				'TrackingId' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_TRACKING_ID)
+				'TrackedFields' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_TRACKED_FIELDS)
+				'Container' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_CONTAINER_ID)
+				'ExecutionId' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_EXECUTION_ID)
+				'API' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_APIURL)
+				'MainProcessName' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_PROCESS_NAME)
+				'MainProcessComponentId' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_PROCESS_ID)
+				'Folder' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DIRECTORY)
 			}
 		};
 		// convert to string to get length
@@ -220,7 +234,7 @@ class CreateAuditLogNotification extends BaseCommand {
 	}
 	// Output Json String
 	private void storeStreamJson(String json, Properties props) {
-		dataContext.storeStream(new ByteArrayInputStream(json.getBytes("UTF-8")), props);
+		dataContext.storeStream(new ByteArrayInputStream(json.getBytes(UTF_8)), props);
 	}
 
 	// Output full audit log
@@ -249,10 +263,10 @@ class CreateAuditLogNotification extends BaseCommand {
 			ProcessContext processContext.ProcessContext
 			Auditlogitem([
 				{
-					'Level' 'ERROR'
+					'Level' ERROR
 					'Timestamp' now
-					'Step' 'Notification'
-					'ErrorClass' 'InternalError'
+					'Step' NOTIFICATION
+					'ErrorClass' INTERNAL_ERROR
 				}
 			])
 		};
@@ -268,7 +282,7 @@ class CreateAuditLogNotification extends BaseCommand {
 			Auditlogitem auditLogItems.Auditlogitem
 		}
 		// compress and base64
-		String compressedAuditlog = compressEncode(new ByteArrayInputStream(builder.toString().getBytes("UTF-8")));
+		String compressedAuditlog = compressEncode(new ByteArrayInputStream(builder.toString().getBytes(UTF_8)));
 		// add compressed data node
 		processContext.ProcessContext.put("CompressedData", compressedAuditlog);
 		// create json with compression
@@ -276,7 +290,7 @@ class CreateAuditLogNotification extends BaseCommand {
 			ProcessContext processContext.ProcessContext
 			Auditlogitem([
 				{
-					'Level' 'LOG'
+					'Level' LOG
 					'Timestamp' now
 				}
 			])
