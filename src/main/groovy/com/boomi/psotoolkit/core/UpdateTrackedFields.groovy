@@ -57,8 +57,7 @@ class UpdateTrackedFields extends BaseCommand {
 		logger.fine(DPP_FWK_TRACKEDFIELDS + ": " + trackedFields);
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_TRACKEDFIELDS, trackedFields, false);
 	}
-
-	boolean validKeyValuePairs(Properties props) {
+	private boolean validKeyValuePairs(Properties props) {
 		boolean isValid = true;
 		Set valProps = props.stringPropertyNames().findAll{it.contains(DDP_FWK_TRACKING_VAL)};
 		Set keyProps = props.stringPropertyNames().findAll{it.contains(DDP_FWK_TRACKING_KEY)};
@@ -92,7 +91,7 @@ class UpdateTrackedFields extends BaseCommand {
 		return isValid;
 	}
 
-	String updateTrackedFields(String key, String val, String currentTrackedFields) {
+	private String updateTrackedFields(String key, String val, String currentTrackedFields) {
 		String trackedFields = currentTrackedFields;
 		String keyval = new StringBuilder(key).append(HASH).append(val).toString().replaceAll(COMMA, '');
 		// Add field if not already there
@@ -104,7 +103,7 @@ class UpdateTrackedFields extends BaseCommand {
 		return trackedFields;
 	}
 
-	String updateValidatedTrackedFields(Properties props, String currentTrackedFields) {
+	private String updateValidatedTrackedFields(Properties props, String currentTrackedFields) {
 		String trackedFields = currentTrackedFields;
 		Set keyProps = props.stringPropertyNames().findAll{it.contains(DDP_FWK_TRACKING_KEY)};
 		keyProps.each { String keyprop ->
@@ -114,7 +113,7 @@ class UpdateTrackedFields extends BaseCommand {
 		return trackedFields;
 	}
 
-	String updateTrackedFields(Properties props, String currentTrackedFields) {
+	private String updateTrackedFields(Properties props, String currentTrackedFields) {
 		String trackedFields = currentTrackedFields;
 		Set keyProps = props.stringPropertyNames().findAll{it.contains(DDP_FWK_TRACKING_KEY)};
 		keyProps.each { String keyprop ->
