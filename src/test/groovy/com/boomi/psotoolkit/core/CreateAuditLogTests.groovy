@@ -41,6 +41,11 @@ class CreateAuditLogTests extends BaseTests {
 
 		new CreateAuditLog(dataContext).execute();
 
+		assert !dataContext.getProperties(0).get(DDP_FWK_LOG_MSG);
+		assert !dataContext.getProperties(0).get(DDP_FWK_LOG_TYPE);
+		assert !dataContext.getProperties(0).get(DDP_FWK_LOG_DETAILS);
+		assert !dataContext.getProperties(0).get(DDP_FWK_LOG_DOC);
+
 		def auditLog = new JsonSlurper().parse(dataContext.getOutStreams()[0])
 
 		assert auditLog.Auditlogitem[0].Level == "LOG";
