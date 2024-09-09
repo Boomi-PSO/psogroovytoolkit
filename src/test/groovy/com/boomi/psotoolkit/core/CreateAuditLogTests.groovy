@@ -17,7 +17,6 @@ class CreateAuditLogTests extends BaseTests {
 	String DDP_FWK_LOG_MSG = "document.dynamic.userdefined.DDP_FWK_LOG_MSG";
 	String DDP_FWK_LOG_DOC = "document.dynamic.userdefined.DDP_FWK_LOG_DOC";
 	String DDP_FWK_LOG_TYPE = "document.dynamic.userdefined.DDP_FWK_LOG_TYPE";
-	String DDP_FWK_NS_INTERNAL_ID = "document.dynamic.userdefined.DDP_FWK_NS_INTERNAL_ID";
 	String DDP_FWK_LOG_DETAILS = "document.dynamic.userdefined.DDP_FWK_LOG_DETAILS";
 
 	@BeforeEach
@@ -35,7 +34,6 @@ class CreateAuditLogTests extends BaseTests {
 
 		dataContext.getProperties(0).put(DDP_FWK_LOG_MSG, 'Error');
 		dataContext.getProperties(0).put(DDP_FWK_LOG_TYPE, 'json');
-		dataContext.getProperties(0).put(DDP_FWK_NS_INTERNAL_ID, '1');
 		dataContext.getProperties(0).put(DDP_FWK_LOG_DETAILS, 'Test it');
 		dataContext.getProperties(0).put(DDP_FWK_LOG_DOC, '{"DDP_DocumentId":"6825177154989703747","DDP_PreviousEventId":"544"}');
 
@@ -49,7 +47,7 @@ class CreateAuditLogTests extends BaseTests {
 		def auditLog = new JsonSlurper().parse(dataContext.getOutStreams()[0])
 
 		assert auditLog.Auditlogitem[0].Level == "LOG";
-		assert auditLog.Auditlogitem[0].Id == "1";
+		assert auditLog.Auditlogitem[0].Id.isLong();
 		assert auditLog.Auditlogitem[0].Step == "Error";
 		assert auditLog.Auditlogitem[0].Details == "Test it";
 		assert auditLog.Auditlogitem[0].DocType == "json";
@@ -66,13 +64,11 @@ class CreateAuditLogTests extends BaseTests {
 
 		dataContext.getProperties(0).put(DDP_FWK_LOG_MSG, 'Error');
 		dataContext.getProperties(0).put(DDP_FWK_LOG_TYPE, 'json');
-		dataContext.getProperties(0).put(DDP_FWK_NS_INTERNAL_ID, '1');
 		dataContext.getProperties(0).put(DDP_FWK_LOG_DETAILS, 'Test it');
 		dataContext.getProperties(0).put(DDP_FWK_LOG_DOC, '{"DDP_DocumentId":"6825177154989703747","DDP_PreviousEventId":"544"}');
 
 		dataContext.getProperties(1).put(DDP_FWK_LOG_MSG, 'Error');
 		dataContext.getProperties(1).put(DDP_FWK_LOG_TYPE, 'json');
-		dataContext.getProperties(1).put(DDP_FWK_NS_INTERNAL_ID, '2');
 		dataContext.getProperties(1).put(DDP_FWK_LOG_DETAILS, 'Test it');
 		dataContext.getProperties(1).put(DDP_FWK_LOG_DOC, '{"DDP_DocumentId":"6825177154989703747","DDP_PreviousEventId":"544"}');
 
@@ -81,7 +77,7 @@ class CreateAuditLogTests extends BaseTests {
 		def auditLog = new JsonSlurper().parse(dataContext.getOutStreams()[0])
 
 		assert auditLog.Auditlogitem[0].Level == "LOG";
-		assert auditLog.Auditlogitem[0].Id == "1";
+		assert auditLog.Auditlogitem[0].Id.isLong();
 		assert auditLog.Auditlogitem[0].Step == "Error";
 		assert auditLog.Auditlogitem[0].Details == "Test it";
 		assert auditLog.Auditlogitem[0].DocType == "json";
@@ -98,7 +94,7 @@ class CreateAuditLogTests extends BaseTests {
 		def auditLog = new JsonSlurper().parse(dataContext.getOutStreams()[0])
 
 		assert auditLog.Auditlogitem[0].Level == "LOG";
-		assert !auditLog.Auditlogitem[0].Id;
+		assert auditLog.Auditlogitem[0].Id.isLong();
 		assert !auditLog.Auditlogitem[0].Step;
 		assert !auditLog.Auditlogitem[0].Details;
 		assert !auditLog.Auditlogitem[0].DocType;
