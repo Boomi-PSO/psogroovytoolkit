@@ -241,8 +241,8 @@ class CreateAuditLogNotification extends BaseCommand {
 	private void storeWithoutCompression(def processContext, def auditLogItems, Properties props) {
 		JsonBuilder builder = new JsonBuilder();
 		builder {
-			ProcessContext processContext.ProcessContext
-			Auditlogitem auditLogItems.Auditlogitem
+			'ProcessContext' processContext.ProcessContext
+			'Auditlogitem' auditLogItems.Auditlogitem
 		}
 		storeStreamJsonBuilder(builder, props);
 	}
@@ -252,7 +252,7 @@ class CreateAuditLogNotification extends BaseCommand {
 		JsonBuilder builder = new JsonBuilder();
 		// Create over sized audit log items
 		builder {
-			Auditlogitem auditLogItems.Auditlogitem
+			'Auditlogitem' auditLogItems.Auditlogitem
 		}
 		// Truncate to max size - header json and leading curly bracket
 		String truncatedData = builder.toString().substring(0, (auditlogSizeMax - auditlogProcessContextSize - 1));
@@ -260,7 +260,7 @@ class CreateAuditLogNotification extends BaseCommand {
 		processContext.ProcessContext.put("TruncatedData", truncatedData);
 		// create error json to store
 		builder {
-			ProcessContext processContext.ProcessContext
+			'ProcessContext' processContext.ProcessContext
 			Auditlogitem([
 				{
 					'Level' ERROR
@@ -278,8 +278,8 @@ class CreateAuditLogNotification extends BaseCommand {
 		JsonBuilder builder = new JsonBuilder();
 		// build uncompressed json
 		builder {
-			ProcessContext processContext.ProcessContext
-			Auditlogitem auditLogItems.Auditlogitem
+			'ProcessContext' processContext.ProcessContext
+			'Auditlogitem' auditLogItems.Auditlogitem
 		}
 		// compress and base64
 		String compressedAuditlog = compressEncode(new ByteArrayInputStream(builder.toString().getBytes(UTF_8)));
@@ -287,7 +287,7 @@ class CreateAuditLogNotification extends BaseCommand {
 		processContext.ProcessContext.put("CompressedData", compressedAuditlog);
 		// create json with compression
 		builder {
-			ProcessContext processContext.ProcessContext
+			'ProcessContext' processContext.ProcessContext
 			Auditlogitem([
 				{
 					'Level' LOG
