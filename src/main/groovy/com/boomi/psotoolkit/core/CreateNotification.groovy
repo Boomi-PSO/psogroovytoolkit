@@ -66,7 +66,7 @@ class CreateNotification extends BaseCommand {
 			String docbase64;
 			String key = props.getProperty(DDP_FWK_DOC_KEY) ?: EMPTY_STRING;
 			String val = props.getProperty(DDP_FWK_DOC_VAL) ?: EMPTY_STRING;
-			String level = props.getProperty(DDP_FWK_NS_LEVEL) ?: EMPTY_STRING;
+			String level = props.getProperty(DDP_FWK_NS_LEVEL) ?: INFO;
 			String crud = props.getProperty(DDP_FWK_DOC_CRUD_TYPE) ?: EMPTY_STRING;
 			if (key.length() > 0 && (CREATE.equals(crud) || UPSERT.equals(crud) || UPDATE.equals(crud) || DELETE.equals(crud) || READ.equals(crud))) {
 				msgHash = String.valueOf((key+val+crud).hashCode());

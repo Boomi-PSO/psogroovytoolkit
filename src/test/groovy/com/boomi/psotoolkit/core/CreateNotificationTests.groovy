@@ -71,6 +71,13 @@ class CreateNotificationTests extends BaseTests {
 	}
 
 	@Test
+	void testInfoDefault() {
+		new CreateNotification(dataContext).execute();
+
+		assert !dataContext.getOutStreams()[0];
+	}
+
+	@Test
 	void testWarning() {
 		dataContext.getProperties(0).put(DDP_FWK_NS_LEVEL, "WARNING");
 		dataContext.getProperties(0).put(DDP_FWK_NS_MSG, "This is a test warning");
