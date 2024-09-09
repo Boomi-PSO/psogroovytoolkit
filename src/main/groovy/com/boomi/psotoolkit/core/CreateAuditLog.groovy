@@ -1,5 +1,6 @@
 package com.boomi.psotoolkit.core
 
+import java.security.SecureRandom
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -7,7 +8,6 @@ import groovy.json.JsonBuilder;
 
 /* **************************************************************************
  This Groovy script sets audit log document properties and creates audit log object.
- IN : DDP_FWK_NS_INTERNAL_ID - unique value
  DDP_FWK_LOG_TYPE - EDIRAW_IN, EDIDOC_IN, CDMDOC, ADMDOC_IN, NOTIFICATION_DOC, EDIRAW_OUT, EDIDOC_OUT, ADMDOC_OUT
  DDP_FWK_LOG_MSG - any arbitrary log header text
  DDP_FWK_LOG_DETAILS - any arbitrary log details text
@@ -23,7 +23,6 @@ class CreateAuditLog extends BaseCommand {
 	private static final String DDP_FWK_LOG_TYPE = "document.dynamic.userdefined.DDP_FWK_LOG_TYPE";
 	private static final String DDP_FWK_LOG_MSG = "document.dynamic.userdefined.DDP_FWK_LOG_MSG";
 	private static final String DDP_FWK_NS_MSG_HASH = "document.dynamic.userdefined.DDP_FWK_NS_MSG_HASH";
-	private static final String DDP_FWK_NS_INTERNAL_ID = "document.dynamic.userdefined.DDP_FWK_NS_INTERNAL_ID";
 	private static final String DDP_FWK_LOG_DETAILS = "document.dynamic.userdefined.DDP_FWK_LOG_DETAILS";
 	private static final String DATE_FORMAT = "yyyyMMdd HHmmss.SSS";
 	private static final String NOTIFICATION_DOC = "NOTIFICATION_DOC";
@@ -57,13 +56,14 @@ class CreateAuditLog extends BaseCommand {
 					docbase64 = doc.bytes.encodeBase64().toString();
 				}
 				String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT))
-				String id = props.getProperty(DDP_FWK_NS_INTERNAL_ID)
+				SecureRandom secureRandom = new SecureRandom();
+				Long id = Math.abs(secureRandom.nextLong());
 				def builder = new JsonBuilder();
 				builder {
 					Auditlogitem([
 						{
 							'Level' 'LOG'
-							'Id' id
+							'Id' id.toString()
 							'Timestamp' ts
 							'Step' msg
 							'Details' details

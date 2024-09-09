@@ -1,5 +1,6 @@
 package com.boomi.psotoolkit.core
 
+import java.security.SecureRandom
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -8,7 +9,6 @@ import com.boomi.execution.ExecutionUtil;
 import groovy.json.JsonBuilder;
 /* **************************************************************************
  This script sets notification document properties and creates notification object
- IN : DDP_FWK_NS_INTERNAL_ID - unique value
  OUT: notification JSON document "on the flow""
  DPP_FWK_EXEC_SUMMARY_FLAG - true, if CRUD statistics provided
  DPP_FWK_ERROR_LEVEL - true if level ERROR found
@@ -25,7 +25,6 @@ class CreateNotification extends BaseCommand {
 	private static final String DDP_FWK_NS_CLASS = "document.dynamic.userdefined.DDP_FWK_NS_CLASS";
 	private static final String DDP_FWK_NS_DOC = "document.dynamic.userdefined.DDP_FWK_NS_DOC";
 	private static final String DDP_FWK_NS_MSG = "document.dynamic.userdefined.DDP_FWK_NS_MSG";
-	private static final String DDP_FWK_NS_INTERNAL_ID = "document.dynamic.userdefined.DDP_FWK_NS_INTERNAL_ID";
 	private static final String DDP_FWK_NS_PROCESSCALLSTACK = "document.dynamic.userdefined.DDP_FWK_NS_ProcessCallStack";
 	private static final String DPP_FWK_EXEC_SUMMARY_FLAG = "DPP_FWK_EXEC_SUMMARY_FLAG";
 	private static final String DPP_FWK_ERROR_LEVEL = "DPP_FWK_ERROR_LEVEL";
@@ -106,7 +105,8 @@ class CreateNotification extends BaseCommand {
 				logger.fine("notification object hash = " + msgHash);
 			}
 
-			// ******** end of Document related functionality ********
+			SecureRandom secureRandom = new SecureRandom();
+			Long id = Math.abs(secureRandom.nextLong());
 
 			if (msgHash && uniqueValues.add(msgHash) && !skipNotification) {
 				JsonBuilder builder = new JsonBuilder();
@@ -114,7 +114,7 @@ class CreateNotification extends BaseCommand {
 					Auditlogitem([
 						{
 							'Level' level
-							'Id' props.getProperty(DDP_FWK_NS_INTERNAL_ID)
+							'Id' id.toString()
 							'Timestamp' ts
 							'ProcessCallStack' props.getProperty(DDP_FWK_NS_PROCESSCALLSTACK)
 							'Step' "Notification"
