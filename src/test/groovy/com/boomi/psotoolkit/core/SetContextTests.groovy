@@ -107,7 +107,7 @@ class SetContextTests extends BaseTests {
 			new SetContext(dataContext).execute();
 		}
 		catch (IllegalStateException ise) {
-			assert ise.getMessage() == "Number of detected Message Envelopes = 2. Only a single Message Envelope allowed at SET Context.";
+			assert ise.getMessage() == "The number of detected Message Envelopes is 2. Only a single Message Envelope allowed at SET Context.";
 		}
 
 		assert !ExecutionUtil.dynamicProcessProperties.get(DPP_FWK_TRACKINGID);

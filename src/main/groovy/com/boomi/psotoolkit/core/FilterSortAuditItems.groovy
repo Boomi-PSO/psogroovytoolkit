@@ -41,13 +41,13 @@ class FilterSortAuditItems extends BaseCommand {
 		boolean fullLog = false;
 		boolean auditLog = false;
 		String disableAudit = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_AUDIT);
-		logger.fine("disableAudit = " + disableAudit);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_DISABLE_AUDIT, disableAudit] as Object[]));
 		String disableNotify = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_NOTIFICATION);
-		logger.fine("disableNotify = " + disableNotify);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_DISABLE_NOTIFICATION, disableNotify] as Object[]));
 		String errorFlag = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_ERROR_LEVEL);
-		logger.fine("errorFlag = " + errorFlag);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_ERROR_LEVEL, errorFlag] as Object[]));
 		String warnFlag = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_WARN_LEVEL);
-		logger.fine("warnFlag = " + warnFlag);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_WARN_LEVEL, warnFlag] as Object[]));
 		// if both flags are NO (do not disable), then output all
 		if (NO.equals(disableAudit) && NO.equals(disableNotify)) {
 			fullLog = TRUE;
@@ -60,8 +60,8 @@ class FilterSortAuditItems extends BaseCommand {
 		else if (NO.equals(disableAudit) && YES.equals(disableNotify)) {
 			auditLog = TRUE;
 		}
-		logger.fine("fulllog = " + fullLog);
-		logger.fine("auditlog = " + auditLog);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, ["fullLog", fullLog] as Object[]));
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, ["auditLog", auditLog] as Object[]));
 		// Init temp collections
 		SortedMap sortedMap = new TreeMap();
 		// Loop through documents and store the sort-by-values and document indices in the sortedMap.

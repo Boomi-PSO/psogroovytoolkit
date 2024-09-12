@@ -53,11 +53,9 @@ class CreateNotification extends BaseCommand {
 	@Override
 	public void execute() {
 		logScriptName(SCRIPT_NAME);
-		int docCount = dataContext.getDataCount()
-		logger.fine("In-Document Count=" + docCount)
 		Set<String> uniqueValues = [] as Set
 
-		for (int docNo = 0; docNo < docCount; docNo++) {
+		for (int docNo = 0; docNo < dataContext.getDataCount(); docNo++) {
 			Properties props = dataContext.getProperties(docNo)
 			boolean skipNotification = false;
 			String msgHash;
@@ -70,9 +68,9 @@ class CreateNotification extends BaseCommand {
 			String crud = props.getProperty(DDP_FWK_DOC_CRUD_TYPE) ?: EMPTY_STRING;
 			if (key.length() > 0 && (CREATE.equals(crud) || UPSERT.equals(crud) || UPDATE.equals(crud) || DELETE.equals(crud) || READ.equals(crud))) {
 				msgHash = String.valueOf((key+val+crud).hashCode());
-				logger.fine("notification object hash = " + msgHash);
+				logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, ["msgHash", msgHash] as Object[]));
 				ExecutionUtil.setDynamicProcessProperty(DPP_FWK_EXEC_SUMMARY_FLAG, TRUE, false);
-				logger.fine("DPP_FWK_EXEC_SUMMARY_FLAG = true");
+				logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_EXEC_SUMMARY_FLAG, "true"] as Object[]));
 				if(!(WARNING.equals(level) || ERROR.equals(level))) {
 					skipNotification = true;
 				}
@@ -81,11 +79,11 @@ class CreateNotification extends BaseCommand {
 			String code = props.getProperty(DDP_FWK_NS_CLASS) ?: EMPTY_STRING;
 			if (ERROR.equals(level)) {
 				ExecutionUtil.setDynamicProcessProperty(DPP_FWK_ERROR_LEVEL, TRUE, false);
-				logger.fine("DPP_FWK_ERROR_LEVEL = true");
+				logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_ERROR_LEVEL, "true"] as Object[]));
 			}
 			else if (WARNING.equals(level)) {
 				ExecutionUtil.setDynamicProcessProperty(DPP_FWK_WARN_LEVEL, TRUE, false);
-				logger.fine("DPP_FWK_WARN_LEVEL = true");
+				logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_WARN_LEVEL, "true"] as Object[]));
 			}
 			if (!INFO.equals(level) && !ADVISORY_NOTIF.equals(code)) {
 				String doc = props.getProperty(DDP_FWK_NS_DOC);
@@ -98,11 +96,11 @@ class CreateNotification extends BaseCommand {
 				if (nsMsg) {
 					nsMsg = nsMsg.replaceAll(MSG_ILLEGAL_CHARS, SPACE);
 					props.setProperty(DDP_FWK_NS_MSG, nsMsg);
-					logger.fine("DDP_FWK_NS_MSG = " + nsMsg);
+					logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DDP_FWK_NS_MSG, nsMsg] as Object[]));
 				}
 
 				msgHash = level + code + nsMsg.replaceAll(WHITE_SPACES, EMPTY_STRING).hashCode().toString();
-				logger.fine("notification object hash = " + msgHash);
+				logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, ["msgHash", msgHash] as Object[]));
 			}
 
 			SecureRandom secureRandom = new SecureRandom();

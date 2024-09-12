@@ -54,6 +54,10 @@ public class ExecutionUtil {
 			System.out.println(msg);
 		}
 
+		public void warning(Object msg) {
+			System.out.println(msg);
+		}
+
 		public void severe(Object msg) {
 			System.out.println(msg);
 		}

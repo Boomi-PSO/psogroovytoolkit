@@ -49,6 +49,8 @@ class SetContext extends BaseCommand {
 	private static final String COMMA = ",";
 	private static final String DPP_FWK_TRACKINGID = "DPP_FWK_TrackingId";
 	private static final String DPP_FWK_TRACKINGID_DEFAULT = "DPP_FWK_TrackingId_Default";
+	// Local Resource Keys
+	private static final String ERROR_NUM_ENVELOPES = "numenvelopes.error";
 	// Setup global objects
 	private JsonSlurper jsonSlurper = new JsonSlurper();
 	private int envCount = 0
@@ -63,11 +65,8 @@ class SetContext extends BaseCommand {
 		logScriptName(SCRIPT_NAME);
 		// Start main DPPs
 		setMainDynamicProcessProperties();
-		// Number of docs
-		int docCount = dataContext.getDataCount();
-		logger.fine("In-Document Count=" + docCount);
 		// Main doc loop
-		for (int docNo = 0; docNo < docCount; docNo++) {
+		for (int docNo = 0; docNo < dataContext.getDataCount(); docNo++) {
 			// Get DDPs
 			Properties props = dataContext.getProperties(docNo);
 			// Set up tracking DPPs if Json Envelope
@@ -91,7 +90,7 @@ class SetContext extends BaseCommand {
 		// Extract Tracked info if this is an envelope
 		if (jsonDoc?.EnvelopeHeader) {
 			if (++envCount > 1) {
-				throw new IllegalStateException("Number of detected Message Envelopes = " + envCount + ". Only a single Message Envelope allowed at SET Context.");
+				throw new IllegalStateException(getStringResource(ERROR_NUM_ENVELOPES, [envCount] as Object[]));
 			}
 			String trackedFields = jsonDoc.EnvelopeHeader.TrackedFields;
 			if (trackedFields) {
@@ -121,7 +120,7 @@ class SetContext extends BaseCommand {
 			propVal = ExecutionUtil.getDynamicProcessProperty(defaultPropName);
 			ExecutionUtil.setDynamicProcessProperty(propName, propVal, false);
 		}
-		logger.fine(propName + "=" + propVal);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [propName, propVal] as Object[]));
 	}
 
 	// Setup main DPPs
@@ -136,19 +135,19 @@ class SetContext extends BaseCommand {
 			processNameTopLevel = execTaskCurrent.getProcessName();
 		}
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_PROCESSNAME, processNameTopLevel, false);
-		logger.fine("DPP_FWK_ProcessName=" + processNameTopLevel);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_PROCESSNAME, processNameTopLevel] as Object[]));
 
 		String processIDTopLevel = execTaskCurrent.getTopLevelProcessId();
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_PROCESSID, processIDTopLevel, false);
-		logger.fine("DPP_FWK_ProcessId=" + processIDTopLevel);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_PROCESSID, processIDTopLevel] as Object[]));
 
 		String executionIDTopLevel = execTaskCurrent.getTopLevelExecutionId();
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_EXECUTIONID, executionIDTopLevel, false);
-		logger.fine("DPP_FWK_ExecutionId=" + executionIDTopLevel);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_EXECUTIONID, executionIDTopLevel] as Object[]));
 
 		String containerId = ExecutionUtil.getRuntimeExecutionProperty('NODE_ID');
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_CONTAINERID, containerId, false);
-		logger.fine("DPP_FWK_ContainerId=" + containerId);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_CONTAINERID, containerId] as Object[]));
 
 		checkOrSetProcessProperty(DPP_FWK_DISABLE_NOTIFICATION, DPP_FWK_DISABLE_NOTIFICATION_DEFAULT);
 		checkOrSetProcessProperty(DPP_FWK_DISABLE_AUDIT, DPP_FWK_DISABLE_AUDIT_DEFAULT);
@@ -157,19 +156,19 @@ class SetContext extends BaseCommand {
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_PROCESS_ERROR, null, false);
 
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_STARTTIME, execTaskCurrent.getStartTime().toString(), false);
-		logger.fine("DPP_FWK_StartTime=" + execTaskCurrent.getStartTime());
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_STARTTIME, execTaskCurrent.getStartTime()] as Object[]));
 
 		String inmethod = ExecutionUtil.getDynamicProcessProperty(INMETHOD);
 		String inpath = ExecutionUtil.getDynamicProcessProperty(INPATH);
 		if (inmethod) {
 			ExecutionUtil.setDynamicProcessProperty(DPP_FWK_APIURL, inmethod + " " + inpath, false);
-			logger.fine("DPP_FWK_APIURL=" + inmethod + " " + inpath);
+			logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_APIURL, inmethod + " " + inpath] as Object[]));
 		}
 	}
 	// Setup Traked Field DPPs
 	private void setTrackedFields(String trackedFields) {
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_TRACKEDFIELDS, trackedFields, false);
-		logger.fine("DPP_FWK_TrackedFields=" + trackedFields);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_TRACKEDFIELDS, trackedFields] as Object[]));
 		// set DPP_FWK_TF_...
 		StringTokenizer tokenizer = new StringTokenizer(trackedFields, COMMA);
 		while (tokenizer.hasMoreElements()) {
@@ -177,7 +176,7 @@ class SetContext extends BaseCommand {
 			String key = DPP_FWK_TF_  + keyval[0].toUpperCase();
 			String val = keyval[1];
 			ExecutionUtil.setDynamicProcessProperty(key, val, false);
-			logger.fine(key + "=" + val);
+			logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [key, val] as Object[]));
 		}
 	}
 	// Setup HTTP Header DPPs
@@ -189,7 +188,7 @@ class SetContext extends BaseCommand {
 			String dpp_name = inheaderprop.replace(DDP_INHEADER, DPP_FWK_INHEADER_);
 			String dpp_val = props.getProperty(inheaderprop);
 			ExecutionUtil.setDynamicProcessProperty(dpp_name, dpp_val, false);
-			logger.info(dpp_name + ': ' + dpp_val);
+			logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [dpp_name, dpp_val] as Object[]));
 		}
 	}
 }
