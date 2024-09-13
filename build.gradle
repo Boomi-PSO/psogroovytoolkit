@@ -9,6 +9,7 @@ plugins {
 	id 'groovy'
 	id 'java-library'
 	id 'jacoco'
+    id 'maven-publish'
 }
 
 compileJava {
@@ -61,3 +62,16 @@ jacocoTestReport {
             ])
         }))
     }}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/Boomi-PSO/psogroovytoolkit"
+            credentials {
+                username = "marklevine-boomi"
+                password = "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"
+            }
+        }
+    }
+}
