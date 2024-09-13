@@ -50,10 +50,11 @@ class CreateAuditLogNotification extends BaseCommand {
 	private static final String DOC_BASE64 = "DocBase64";
 	private static final String NOTIFICATION = 'Notification';
 	private static final String INTERNAL_ERROR = 'InternalError';
-	private static final String TOO_LONG = "TOOLONG#"
+	private static final String TRUNCATED = "TRUNCATED#"
 	private static final int DIVISOR = 5;
 	private static final String TRUNCATED_DATA_ATTR = "TruncatedData"
 	private static final String COMPRESSED_DATA_ATTR = "CompressedData"
+	private static final String COMMA = ',';
 	// Local Resource Keys
 	private static final String WARN_TRACKED_FIELDS = "trackedfieldssize.warning";
 	private static final String INFO_ORIG_DOC_SIZE = "originaldocumentsize.info";
@@ -198,7 +199,21 @@ class CreateAuditLogNotification extends BaseCommand {
 		}
 		return sortedMap;
 	}
-
+	//truncate tracked fields
+	private String truncateTrackedFeilds(String trackedFields, int trackedFieldMaxSize) {
+		StringBuilder truncatedTrackedFields;
+		int lastValidCommaIndex = trackedFields.indexOf(COMMA, trackedFieldMaxSize);
+		if (lastValidCommaIndex > 0) {
+			truncatedTrackedFields = new StringBuilder(trackedFields.substring(0, lastValidCommaIndex + 1));
+			truncatedTrackedFields.append(TRUNCATED).append(trackedFields.length());
+		}
+		else {
+			truncatedTrackedFields = new StringBuilder(TRUNCATED);
+			truncatedTrackedFields.append(trackedFields.length());
+		}
+		logger.warning(getStringResource(WARN_TRACKED_FIELDS, [trackedFields.length(), DIVISOR, auditLogSizeMax] as Object[]));
+		return truncatedTrackedFields.toString();
+	}
 	// return parsed audit log header - ProcessContext
 	private def getAuditlogProcessContext(JsonSlurper jSlurper) {
 		// Check tracked fields size - this might be too large and cause a StringIndexOutOfBoundsException
@@ -207,9 +222,9 @@ class CreateAuditLogNotification extends BaseCommand {
 		int trackedFieldSize = trackedFields ? trackedFields.length() : 0;
 		// Make sure the tracked field size is less than DIVISOR of the audit log max size
 		// If not replace the tracked fields with error message
-		if (trackedFieldSize >= (auditLogSizeMax / DIVISOR)) {
-			trackedFields = TOO_LONG + trackedFieldSize;
-			logger.warning(getStringResource(WARN_TRACKED_FIELDS, [trackedFieldSize, DIVISOR, auditLogSizeMax] as Object[]));
+		int trackedFieldMaxSize = auditLogSizeMax / DIVISOR;
+		if (trackedFieldSize >= trackedFieldMaxSize) {
+			trackedFields = truncateTrackedFeilds(trackedFields, trackedFieldMaxSize);
 		}
 		JsonBuilder builder = new JsonBuilder();
 		builder {
