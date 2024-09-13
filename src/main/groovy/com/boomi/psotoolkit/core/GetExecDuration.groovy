@@ -18,7 +18,7 @@ class GetExecDuration extends BaseCommand {
 		if (startIime != null && startIime.length() > 0) {
 			long diffInMillies = Math.abs((new Date()).getTime() - Long.parseLong(startIime));
 			ExecutionUtil.setDynamicProcessProperty(DPP_FWK_EXEC_DURATION_MSEC, Long.toString(diffInMillies), false);
-			logger.fine("Duration (ms): " + diffInMillies);
+			logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_EXEC_DURATION_MSEC, diffInMillies] as Object[]));
 		}
 
 		for( int i = 0; i < dataContext.getDataCount(); i++ ) {

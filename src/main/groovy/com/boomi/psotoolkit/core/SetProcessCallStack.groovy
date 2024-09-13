@@ -26,17 +26,13 @@ class SetProcessCallStack extends BaseCommand {
 	@Override
 	public void execute() {
 		logScriptName(SCRIPT_NAME);
-		int docCount = dataContext.getDataCount();
-		logger.fine("In-Document Count=" + docCount);
-
 		String processName = getProcessCallStack()
-
-		for (int docNo = 0; docNo < docCount; docNo++) {
+		for (int docNo = 0; docNo < dataContext.getDataCount(); docNo++) {
 			Properties props = dataContext.getProperties(docNo);
 			String level = props.getProperty(DDP_FWK_NS_LEVEL)
 			if (level == ERROR || level == WARNING) {
 				props.setProperty(DDP_FWK_NS_PROCESS_CALL_STACK, processName)
-				logger.fine("DDP_FWK_NS_ProcessCallStack: " + processName)
+				logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DDP_FWK_NS_PROCESS_CALL_STACK, processName] as Object[]));
 			}
 			dataContext.storeStream(dataContext.getStream(docNo), props)
 		}

@@ -1,4 +1,4 @@
-package com.boomi.psotoolkit.core;
+package com.boomi.psotoolkit.core
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,10 +50,21 @@ class CreateAuditLogNotification extends BaseCommand {
 	private static final String DOC_BASE64 = "DocBase64";
 	private static final String NOTIFICATION = 'Notification';
 	private static final String INTERNAL_ERROR = 'InternalError';
+	private static final String TRUNCATED = "TRUNCATED#"
+	private static final int DIVISOR = 5;
+	private static final String TRUNCATED_DATA_ATTR = "TruncatedData"
+	private static final String COMPRESSED_DATA_ATTR = "CompressedData"
+	private static final String COMMA = ',';
+	// Local Resource Keys
+	private static final String WARN_TRACKED_FIELDS = "trackedfieldssize.warning";
+	private static final String INFO_ORIG_DOC_SIZE = "originaldocumentsize.info";
+	private static final String INFO_COMPRESSED_DOC_SIZE = "compresseddocumentsize.info";
+	private static final String INFO_COMPRESSION = "compressionfactor.info";
+	private static final String INFO_COMPRESSION_SIZE = "sizewithcompression.info";
 	// Setup global objects
-	private int auditlogProcessContextSize;
+	private int auditLogProcessContextSize = 0;
+	private int auditLogSizeMax = 9216;
 	private String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS"));
-	private int auditlogSizeMax;
 
 	public CreateAuditLogNotification(def dataContext) {
 		super(dataContext);
@@ -63,7 +74,7 @@ class CreateAuditLogNotification extends BaseCommand {
 		logScriptName(SCRIPT_NAME);
 		// Get max size of audit log
 		String auditlogSizeMaxString = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_AUDITLOG_SIZE_MAX);
-		auditlogSizeMax = (auditlogSizeMaxString && auditlogSizeMaxString.isInteger()) ? Integer.parseInt(auditlogSizeMaxString) : 9216;
+		auditLogSizeMax = (auditlogSizeMaxString && auditlogSizeMaxString.isInteger()) ? Integer.parseInt(auditlogSizeMaxString) : 9216;
 		// Initialise slurper
 		JsonSlurper jSlurper = new JsonSlurper();
 		// Set up the Process Context Json Header
@@ -82,16 +93,16 @@ class CreateAuditLogNotification extends BaseCommand {
 		logScriptName(SCRIPT_NAME);
 		// Get max size of audit log
 		String auditlogSizeMaxString = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_AUDITLOG_SIZE_MAX);
-		auditlogSizeMax = (auditlogSizeMaxString && auditlogSizeMaxString.isInteger()) ? Integer.parseInt(auditlogSizeMaxString) : 9216;
+		auditLogSizeMax = (auditlogSizeMaxString && auditlogSizeMaxString.isInteger()) ? Integer.parseInt(auditlogSizeMaxString) : 9216;
 		// Initialise slurper
 		JsonSlurper jSlurper = new JsonSlurper();
 		// Set up the Process Context Json Header
-		def auditlogProcessContext = getAuditlogProcessContext(jSlurper);
+		def auditLogProcessContext = getAuditlogProcessContext(jSlurper);
 		// Get sorted and filtered Map of document indexes and combine
 		Map filteredSortedDocuments = getfilteredSortedDocuments();
 		if (!filteredSortedDocuments.isEmpty()) {
 			Tuple combinedAuditLogItems = combineAuditLogs(jSlurper, filteredSortedDocuments);
-			storeAuditLogNotifications(auditlogProcessContext, combinedAuditLogItems[0], combinedAuditLogItems[1], combinedAuditLogItems[2]);
+			storeAuditLogNotifications(auditLogProcessContext, combinedAuditLogItems[0], combinedAuditLogItems[1], combinedAuditLogItems[2]);
 		}
 	}
 
@@ -109,15 +120,15 @@ class CreateAuditLogNotification extends BaseCommand {
 
 	private storeAuditLogNotifications(def auditlogProcessContext, def auditLogItems, int docSize, Properties props) {
 		// don't count start/end curly brackets twice, but add the extra comma --> -1 on size
-		int auditlogSize = auditlogProcessContextSize + docSize - 1;
-		props.setProperty(DDP_FWK_DOCSIZE, auditlogSize.toString())
+		int auditLogSize = auditLogProcessContextSize + docSize - 1;
+		props.setProperty(DDP_FWK_DOCSIZE, auditLogSize.toString())
 		// store audit log items with process context
-		if (auditlogSize <= auditlogSizeMax) {
+		if (auditLogSize <= auditLogSizeMax) {
 			// Do not modify
 			storeWithoutCompression(auditlogProcessContext, auditLogItems, props);
 		}
 		// Else Remove attached document and recalculate size - if exists
-		else if ((auditlogSize = removeAttachedDocs(auditLogItems, auditlogSize)) <= auditlogSizeMax) {
+		else if ((auditLogSize = removeAttachedDocs(auditLogItems, auditLogSize)) <= auditLogSizeMax) {
 			storeWithoutCompression(auditlogProcessContext, auditLogItems, props);
 		}
 		// Else compress and base64
@@ -153,13 +164,13 @@ class CreateAuditLogNotification extends BaseCommand {
 		boolean fullLog = false;
 		boolean auditLog = false;
 		String disableAudit = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_AUDIT);
-		logger.fine("disableAudit = " + disableAudit);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_DISABLE_AUDIT, disableAudit] as Object[]));
 		String disableNotify = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_DISABLE_NOTIFICATION);
-		logger.fine("disableNotify = " + disableNotify);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_DISABLE_NOTIFICATION, disableNotify] as Object[]));
 		String errorFlag = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_ERROR_LEVEL);
-		logger.fine("errorFlag = " + errorFlag);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_ERROR_LEVEL, errorFlag] as Object[]));
 		String warnFlag = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_WARN_LEVEL);
-		logger.fine("warnFlag = " + warnFlag);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_WARN_LEVEL, warnFlag] as Object[]));
 		// if both flags are NO (do not disable), then output all
 		if (NO.equals(disableAudit) && NO.equals(disableNotify)) {
 			fullLog = TRUE;
@@ -172,8 +183,8 @@ class CreateAuditLogNotification extends BaseCommand {
 		else if (NO.equals(disableAudit) && YES.equals(disableNotify)) {
 			auditLog = TRUE;
 		}
-		logger.fine("fulllog = " + fullLog);
-		logger.fine("auditlog = " + auditLog);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, ["fullLog", fullLog] as Object[]));
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, ["auditLog", auditLog] as Object[]));
 		// Init temp collections
 		SortedMap sortedMap = new TreeMap();
 		// Loop through documents and store the sort-by-values and document indices in the sortedMap
@@ -188,14 +199,38 @@ class CreateAuditLogNotification extends BaseCommand {
 		}
 		return sortedMap;
 	}
-
+	//truncate tracked fields
+	private String truncateTrackedFeilds(String trackedFields, int trackedFieldMaxSize) {
+		StringBuilder truncatedTrackedFields;
+		int lastValidCommaIndex = trackedFields.indexOf(COMMA, trackedFieldMaxSize);
+		if (lastValidCommaIndex > 0) {
+			truncatedTrackedFields = new StringBuilder(trackedFields.substring(0, lastValidCommaIndex + 1));
+			truncatedTrackedFields.append(TRUNCATED).append(trackedFields.length());
+		}
+		else {
+			truncatedTrackedFields = new StringBuilder(TRUNCATED);
+			truncatedTrackedFields.append(trackedFields.length());
+		}
+		logger.warning(getStringResource(WARN_TRACKED_FIELDS, [trackedFields.length(), DIVISOR, auditLogSizeMax] as Object[]));
+		return truncatedTrackedFields.toString();
+	}
 	// return parsed audit log header - ProcessContext
 	private def getAuditlogProcessContext(JsonSlurper jSlurper) {
+		// Check tracked fields size - this might be too large and cause a StringIndexOutOfBoundsException
+		// when truncating the AuditLog document - see PSOTK40
+		String trackedFields = ExecutionUtil.getDynamicProcessProperty(DPP_FWK_TRACKED_FIELDS);
+		int trackedFieldSize = trackedFields ? trackedFields.length() : 0;
+		// Make sure the tracked field size is less than DIVISOR of the audit log max size
+		// If not replace the tracked fields with error message
+		int trackedFieldMaxSize = auditLogSizeMax / DIVISOR;
+		if (trackedFieldSize >= trackedFieldMaxSize) {
+			trackedFields = truncateTrackedFeilds(trackedFields, trackedFieldMaxSize);
+		}
 		JsonBuilder builder = new JsonBuilder();
 		builder {
 			ProcessContext {
 				'TrackingId' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_TRACKING_ID)
-				'TrackedFields' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_TRACKED_FIELDS)
+				'TrackedFields' trackedFields
 				'Container' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_CONTAINER_ID)
 				'ExecutionId' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_EXECUTION_ID)
 				'API' ExecutionUtil.getDynamicProcessProperty(DPP_FWK_APIURL)
@@ -206,7 +241,7 @@ class CreateAuditLogNotification extends BaseCommand {
 		};
 		// convert to string to get length
 		String auditlogProcessContextJson = builder.toString();
-		auditlogProcessContextSize = auditlogProcessContextJson.length();
+		auditLogProcessContextSize = auditlogProcessContextJson.length();
 		// return parsed json
 		return jSlurper.parseText(auditlogProcessContextJson);
 	}
@@ -248,16 +283,15 @@ class CreateAuditLogNotification extends BaseCommand {
 	}
 	// output error
 	private void storeWithError(def processContext, def auditLogItems, Properties props) {
-
 		JsonBuilder builder = new JsonBuilder();
 		// Create over sized audit log items
 		builder {
 			'Auditlogitem' auditLogItems.Auditlogitem
 		}
 		// Truncate to max size - header json and leading curly bracket
-		String truncatedData = builder.toString().substring(0, (auditlogSizeMax - auditlogProcessContextSize - 1));
+		String truncatedData = builder.toString().substring(0, (auditLogSizeMax - auditLogProcessContextSize - 1));
 		// add truncate data node
-		processContext.ProcessContext.put("TruncatedData", truncatedData);
+		processContext.ProcessContext.put(TRUNCATED_DATA_ATTR, truncatedData);
 		// create error json to store
 		builder {
 			'ProcessContext' processContext.ProcessContext
@@ -282,9 +316,9 @@ class CreateAuditLogNotification extends BaseCommand {
 			'Auditlogitem' auditLogItems.Auditlogitem
 		}
 		// compress and base64
-		String compressedAuditlog = compressEncode(new ByteArrayInputStream(builder.toString().getBytes(UTF_8)));
+		String compressedAuditLog = compressEncode(new ByteArrayInputStream(builder.toString().getBytes(UTF_8)));
 		// add compressed data node
-		processContext.ProcessContext.put("CompressedData", compressedAuditlog);
+		processContext.ProcessContext.put(COMPRESSED_DATA_ATTR, compressedAuditLog);
 		// create json with compression
 		builder {
 			'ProcessContext' processContext.ProcessContext
@@ -297,14 +331,14 @@ class CreateAuditLogNotification extends BaseCommand {
 		}
 		// only store if small enough
 		String json = builder.toString();
-		logger.fine("size with compression=" + json.length() + " max size=" + auditlogSizeMax);
-		if (json.length() <= auditlogSizeMax) {
+		logger.fine(getStringResource(INFO_COMPRESSION_SIZE, [json.length(), auditLogSizeMax] as Object[]));
+		if (json.length() <= auditLogSizeMax) {
 			storeStreamJson(json, props);
 			result = true;
 		}
 		else {
 			// still too long, remove compression
-			processContext.ProcessContext.remove("CompressedData");
+			processContext.ProcessContext.remove(COMPRESSED_DATA_ATTR);
 		}
 		return result;
 	}
@@ -321,7 +355,7 @@ class CreateAuditLogNotification extends BaseCommand {
 		} finally {
 			input.close();
 		}
-		logger.fine("original document size: " + input.size());
+		logger.fine(getStringResource(INFO_ORIG_DOC_SIZE, [input.size()] as Object[]));
 
 		if (input.size() > 0) {
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -337,8 +371,8 @@ class CreateAuditLogNotification extends BaseCommand {
 					defSize += count;
 					stream.write(buffer, 0, count);
 				}
-				logger.fine("compressed document size: " + defSize);
-				logger.fine("compression factor: " + (input.size() / (float) defSize));
+				logger.fine(getStringResource(INFO_COMPRESSED_DOC_SIZE, [defSize] as Object[]));
+				logger.fine(getStringResource(INFO_COMPRESSION, [(input.size() / (float) defSize)] as Object[]));
 				byte[] outputbytes = new ByteArrayInputStream(stream.toByteArray()).getBytes();
 				base64EncodedOutput = Base64.getEncoder().encodeToString(outputbytes);
 			} finally {

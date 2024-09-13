@@ -28,6 +28,10 @@ class UpdateTrackedFields extends BaseCommand {
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 	private static final String DDP_FWK_IGNOREUNPAIREDKEYVAL = "document.dynamic.userdefined.DDP_FWK_IgnoreUnpairedKeyVal";
+	// Local Resource Keys
+	private static final String ERROR_NO_KEY_VAL_PAIR = "nokeyvalpair.error";
+	private static final String ERROR_NO_VAL_FOR_KEY = "missingvalueforkey.error";
+	private static final String ERROR_NO_KEY_FOR_VAL = "missingkeyforvalue.error";
 
 	public UpdateTrackedFields(def dataContext) {
 		super(dataContext);
@@ -53,9 +57,8 @@ class UpdateTrackedFields extends BaseCommand {
 			}
 			dataContext.storeStream(dataContext.getStream(i), props);
 		}
-
-		logger.fine(DPP_FWK_TRACKEDFIELDS + ": " + trackedFields);
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_TRACKEDFIELDS, trackedFields, false);
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_TRACKEDFIELDS, trackedFields] as Object[]));
 	}
 	private boolean validKeyValuePairs(Properties props) {
 		boolean isValid = true;
@@ -64,19 +67,20 @@ class UpdateTrackedFields extends BaseCommand {
 		List errorMsgs = [];
 		// verify at least one key/val pair
 		if (keyProps.isEmpty() && valProps.isEmpty()) {
-			errorMsgs.add("There must be at least one Key/Value pair: DDP_FWK_Tracking_Key/DDP_FWK_Tracking_Val");
+			getStringResource(ERROR_NO_KEY_VAL_PAIR)
+			errorMsgs.add(getStringResource(ERROR_NO_KEY_VAL_PAIR));
 		}
 		else {
 			// verify the key properties have corresponding value properties
 			keyProps.each { String keyprop ->
 				if (!props.getProperty(keyprop.replace(KEY, VAL))) {
-					errorMsgs.add("Missing corresponding Value property for Key Property=" + (keyprop - DDP_PATH) + "::" + props.getProperty(keyprop));
+					errorMsgs.add(getStringResource(ERROR_NO_VAL_FOR_KEY, [(keyprop - DDP_PATH), props.getProperty(keyprop)] as Object[]));
 				}
 			}
 			// verify the value properties have corresponding key properties
 			valProps.each { String valprop ->
 				if (!props.getProperty(valprop.replace(VAL, KEY))) {
-					errorMsgs.add("Missing corresponding Key property for Value Property=" + (valprop - DDP_PATH) + "::" + props.getProperty(valprop));
+					errorMsgs.add(getStringResource(ERROR_NO_KEY_FOR_VAL, [(valprop - DDP_PATH), props.getProperty(valprop)] as Object[]));
 				}
 			}
 		}

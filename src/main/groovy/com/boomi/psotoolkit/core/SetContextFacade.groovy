@@ -26,9 +26,7 @@ class SetContextFacade extends BaseCommand {
 		logScriptName(SCRIPT_NAME);
 		String folderFullPath = ExecutionUtil.getComponent(ExecutionManager.getCurrent().getTopLevelComponentId())?.getFolderId()?.getName();
 		ExecutionUtil.setDynamicProcessProperty(DPP_FWK_DIRECTORY, folderFullPath, false);
-
-		logger.fine("DPP_FWK_Directory=" + folderFullPath);
-
+		logger.fine(getStringResource(INFO_ONE_VARIABLE_EQUALS, [DPP_FWK_DIRECTORY, folderFullPath] as Object[]));
 		for( int i = 0; i < dataContext.getDataCount(); i++ ) {
 			dataContext.storeStream(dataContext.getStream(i), dataContext.getProperties(i));
 		}
