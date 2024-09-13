@@ -26,4 +26,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Test report
-          path: psogroovytoolkit/build/reports/tests/test
+          path: build/reports/tests/test
+      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+      # the publishing section of your build.gradle
+      - name: Publish to GitHub Packages
+        run: ./gradlew publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
