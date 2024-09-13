@@ -111,11 +111,13 @@ class CreateAuditLogNotificationTests extends BaseTests {
 
 		JsonSlurper jsluper = new JsonSlurper();
 
-		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"CountryCode#ABW,CountryCode#AFG,CountryCode#AGO,CountryCode#AIA,CountryCode#ALA,CountryCode#ALB,TRUNCATED#4286","TrackingId":"134567890","TruncatedData":"{\\"Auditlogitem\\":[{\\"Details\\":\\"[FWK] CLOSE Context ("},"Auditlogitem":[{"Level":"ERROR","Step":"Notification","ErrorClass":"InternalError"}]}';
+		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"CountryCode#ABW,CountryCode#AFG,CountryCode#AGO,CountryCode#AIA,CountryCode#ALA,CountryCode#ALB,TRUNCATED#4286","TrackingId":"134567890"},"Auditlogitem":[{"Level":"ERROR","Step":"Notification","ErrorClass":"InternalError"}]}';
 		def expectedJson = jsluper.parseText(jsonOut);
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
 		String ts = actualJson.Auditlogitem[0].remove('Timestamp');
 		assert ts != null;
+		String truncatedData =  actualJson.ProcessContext.remove('TruncatedData');
+		assert truncatedData.length() == 50;
 		assert actualJson == expectedJson;
 	}
 
@@ -136,11 +138,13 @@ class CreateAuditLogNotificationTests extends BaseTests {
 
 		JsonSlurper jsluper = new JsonSlurper();
 
-		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"TRUNCATED#111","TrackingId":"134567890","TruncatedData":"{\\"Auditlogitem\\":[{\\"Details\\":\\"[FWK] CLOSE Context (route) (inline-test) (Continuation f_0) - This is a test error\\",\\"DocType\\":\\"json\\",\\"ErrorClass\\":\\"Tr"},"Auditlogitem":[{"Level":"ERROR","Step":"Notification","ErrorClass":"InternalError"}]}\n';
+		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"TRUNCATED#111","TrackingId":"134567890"},"Auditlogitem":[{"Level":"ERROR","Step":"Notification","ErrorClass":"InternalError"}]}';
 		def expectedJson = jsluper.parseText(jsonOut);
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
 		String ts = actualJson.Auditlogitem[0].remove('Timestamp');
 		assert ts != null;
+		String truncatedData =  actualJson.ProcessContext.remove('TruncatedData');
+		assert truncatedData.length() == 147;
 		assert actualJson == expectedJson;
 	}
 

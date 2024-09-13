@@ -6,8 +6,6 @@ import java.text.MessageFormat
 
 abstract public class BaseCommand {
 
-	private static final String BUNDLE_NAME = "com.boomi.psotoolkit.core.LoggerMessages";
-	private static final ResourceBundle LOGGER_MESSAGES = ResourceBundle.getBundle(BUNDLE_NAME);
 	private static final String SCRIPT_START = '>>> Script start '
 	// Global Resource Keys
 	protected static final String INFO_ONE_VARIABLE_EQUALS = "onevariableequals.info";
@@ -30,18 +28,10 @@ abstract public class BaseCommand {
 	}
 
 	protected static String getStringResource(String key) {
-		try {
-			return LOGGER_MESSAGES.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
+		return MessageUtils.getString(key);
 	}
 
 	protected static String getStringResource(String key, Object... params) {
-		try {
-			return MessageFormat.format(LOGGER_MESSAGES.getString(key), params);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
+		return MessageUtils.getString(key, params);
 	}
 }
