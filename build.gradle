@@ -67,7 +67,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/Boomi-PSO/psogroovytoolkit"
+            url = "https://maven.pkg.github.com/boomi-pso/psogroovytoolkit"
             credentials {
                 username = "marklevine-boomi"
                 password = "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"
