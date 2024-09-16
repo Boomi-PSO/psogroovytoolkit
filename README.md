@@ -47,7 +47,7 @@ import com.boomi.psotoolkit.core.CreateAuditLog;
 new CreateAuditLog(dataContext).execute();
 ```
 ### Java 8+
-1. Create a _Custom Library_ with the PSOGroovyToolkit-x.x.x.jar file
+1. Create a _Custom Library_ with the psogroovytoolkit-x.x.x.jar file
 2. Deploy the custom library
 3. Create a _Data Process Shape_ with a _Custom Scripting_ processing step
 ## Version History
