@@ -16,7 +16,7 @@ class BaseTests {
 	}
 
 	protected void readFilesInFolder(List filesInFolder, File folder) {
-		for (final File fileEntry : folder.listFiles()) {
+		for (final File fileEntry : folder.listFiles().sort{it.name}) {
 			if (fileEntry.isDirectory()) {
 				readFilesInFolder(filesInFolder, fileEntry);
 			} else {

@@ -110,6 +110,6 @@ class SetContextTests extends BaseTests {
 			assert ise.getMessage() == "The number of detected Message Envelopes is 2. Only a single Message Envelope allowed at SET Context.";
 		}
 
-		//assert !ExecutionUtil.dynamicProcessProperties.get(DPP_FWK_TRACKINGID);
+		assert !ExecutionUtil.dynamicProcessProperties.get(DPP_FWK_TRACKINGID);
 	}
 }
