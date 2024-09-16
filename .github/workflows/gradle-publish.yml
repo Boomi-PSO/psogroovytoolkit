@@ -27,15 +27,14 @@ jobs:
         with:
           name: Test report
           path: build/reports/tests/test
-      - name: Archive Jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: Java Archive
-          path: build/libs
+      # - name: Archive Jar
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: Java Archive
+      #    path: build/libs
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle
-      #- name: Publish to GitHub Packages
-      #  run: ./gradlew publish
-      #  env:
-      #    USERNAME: ${{ github.actor }}
-      #    TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to GitHub Packages
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
