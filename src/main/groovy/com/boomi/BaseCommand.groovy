@@ -1,8 +1,7 @@
-package com.boomi.psotoolkit.core
+package com.boomi
 
 import com.boomi.execution.ExecutionUtil
-
-import java.text.MessageFormat
+import com.boomi.psotoolkit.core.MessageUtils
 
 abstract public class BaseCommand {
 

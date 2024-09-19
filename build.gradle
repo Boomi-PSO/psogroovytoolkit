@@ -6,10 +6,10 @@
  */
 
 plugins {
+    id 'maven-publish'
 	id 'groovy'
 	id 'java-library'
 	id 'jacoco'
-    id 'maven-publish'
 }
 
 compileJava {
@@ -27,7 +27,7 @@ compileTestGroovy {
     targetCompatibility = '1.8'
 }
 
-version = '0.0.1'
+version = '0.0.5'
 
 repositories {
 	mavenCentral()
@@ -68,7 +68,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.boomi.psotoolkit'
             artifactId = 'psogroovytoolkit'
-            version = '0.0.1'
+            version = '0.0.5'
             from components.java
         }
     }

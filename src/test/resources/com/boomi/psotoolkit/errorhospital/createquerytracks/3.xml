@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Event xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bns:Event" xmlns="http://api.platform.boomi.com/">
+    <bns:eventId xmlns:bns="http://api.platform.boomi.com/">event-5df435aa-3b01-4af3-be16-93f504ab28b4</bns:eventId>
+    <bns:accountId xmlns:bns="http://api.platform.boomi.com/">boomi_marklevine-IRYLEC</bns:accountId>
+    <bns:atomId xmlns:bns="http://api.platform.boomi.com/">7bd087a3-6a94-4afd-a609-fd62d48781a5</bns:atomId>
+    <bns:atomName xmlns:bns="http://api.platform.boomi.com/">Test Cloud Atom</bns:atomName>
+    <bns:eventLevel xmlns:bns="http://api.platform.boomi.com/">ERROR</bns:eventLevel>
+    <bns:eventDate xmlns:bns="http://api.platform.boomi.com/">2024-09-16T12:59:35Z</bns:eventDate>
+    <bns:status xmlns:bns="http://api.platform.boomi.com/">{"ProcessContext":{"API":null,"CompressedData":"eNqlkk1P4zAQhv9KZK412MnYiXurtgVV4kulEge0B8eZVF4Su0rcXVDFf8cJKxakbQ9wmw+/7zMz8p7cdt5g3//wLuBTINM9md0uydTtmmZChqq2DjsyJVwrEMhpWXJJATJDFdaMVnmteFlnkOqCTMjiCc0uWO+WVdSgAKmlqKhIS6CgTUmVyHOKmSxAcZMzpqLo3DfVyLjy5vFsGWLpKmLfR2u33qELo2UKUmpmapoqwSlUktEC65wKKIBLAxxQf9Zf6xb/eiej97rT5hGrc4tN1ceOiw9OAvbBvnet24w0noGQeaEYeZmQ2a6yofEbG7Al04c9mWO8TjNYrKM6GeVzb9bP2wH4q/cuFt58YnCJv7GJ8eXNRczuAm5jsug63w1U20YL3Q61lKXAcsYTpoBxcZoVKuL/g0v0Jq55EJoegt7rzsUNj2Lll7HZd7D5MaxLcDhX4vyfg3T4QF+sVjerf/xrH2xtjR6+59Ehii/vLr6zu3rD/nx5BUX1DPc=","Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"name#testit","TrackingId":"134567890"},"Auditlogitem":[{"Level":"LOG","Timestamp":"20240918 083143.860"}]}
+    </bns:status>
+    <bns:eventType xmlns:bns="http://api.platform.boomi.com/">user.notification</bns:eventType>
+    <bns:executionId xmlns:bns="http://api.platform.boomi.com/">execution-1ff4d82a-64b8-4c7c-946b-fd498eba0856-2024.09.16</bns:executionId>
+    <bns:title xmlns:bns="http://api.platform.boomi.com/">ERROR NOTIFICATION</bns:title>
+    <bns:updateDate xmlns:bns="http://api.platform.boomi.com/">2024-09-16T12:59:35Z</bns:updateDate>
+    <bns:errorDocumentCount xmlns:bns="http://api.platform.boomi.com/">0</bns:errorDocumentCount>
+    <bns:inboundDocumentCount xmlns:bns="http://api.platform.boomi.com/">0</bns:inboundDocumentCount>
+    <bns:outboundDocumentCount xmlns:bns="http://api.platform.boomi.com/">0</bns:outboundDocumentCount>
+    <bns:processName xmlns:bns="http://api.platform.boomi.com/">[FWK] CLOSE Context (route) (Continuation f_0)</bns:processName>
+    <bns:recordDate xmlns:bns="http://api.platform.boomi.com/">2024-09-16T12:59:51Z</bns:recordDate>
+    <bns:environment xmlns:bns="http://api.platform.boomi.com/">test-in-cloud</bns:environment>
+    <bns:classification xmlns:bns="http://api.platform.boomi.com/">TEST</bns:classification>
+    <bns:topLevelProcessId xmlns:bns="http://api.platform.boomi.com/">0a469ebb-9079-499d-98ac-d5778373fa18</bns:topLevelProcessId>
+    <bns:processId xmlns:bns="http://api.platform.boomi.com/">b52d7c21-a5cd-4d88-8bfc-cf0f27b8c4f5</bns:processId>
+</Event>

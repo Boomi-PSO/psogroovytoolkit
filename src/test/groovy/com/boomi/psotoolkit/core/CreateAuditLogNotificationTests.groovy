@@ -70,7 +70,7 @@ class CreateAuditLogNotificationTests extends BaseTests {
 
 		JsonSlurper jsluper = new JsonSlurper();
 
-		String jsonOut = '{"ProcessContext":{"TrackingId":"134567890","TrackedFields":"name#testit","Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","API":null,"MainProcessName":"Mock It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","Folder":"Mock/It"},"Auditlogitem":[{"Level":"LOG","Id":"1","Timestamp":"2024-07-01T09:40:15.389Z","Step":"Error","Details":"Test it","DocType":"json","DocBase64":"eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0="}]}';
+		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"name#testit","TrackingId":"134567890"},"Auditlogitem":[{"Details":"Test it","DocBase64":"eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0=","DocType":"json","Id":"1","Level":"LOG","Step":"Error","Timestamp":"20240701 094015.389"}]}';
 		def expectedJson = jsluper.parseText(jsonOut);
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
 
@@ -88,7 +88,7 @@ class CreateAuditLogNotificationTests extends BaseTests {
 
 		JsonSlurper jsluper = new JsonSlurper();
 
-		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"CountryCode#ABW,CountryCode#AFG,CountryCode#AGO,CountryCode#AIA,CountryCode#ALA,CountryCode#ALB,CountryCode#AND,CountryCode#ANT,CountryCode#ARE,CountryCode#ARG,CountryCode#ARM,CountryCode#ASC,CountryCode#ASM,TRUNCATED#4286","TrackingId":"134567890"},"Auditlogitem":[{"Details":"Test it","DocBase64":"eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0=","DocType":"json","Id":"1","Level":"LOG","Step":"Error","Timestamp":"2024-07-01T09:40:15.389Z"}]}';
+		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"CountryCode#ABW,CountryCode#AFG,CountryCode#AGO,CountryCode#AIA,CountryCode#ALA,CountryCode#ALB,CountryCode#AND,CountryCode#ANT,CountryCode#ARE,CountryCode#ARG,CountryCode#ARM,CountryCode#ASC,CountryCode#ASM,TRUNCATED#4286","TrackingId":"134567890"},"Auditlogitem":[{"Details":"Test it","DocBase64":"eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0=","DocType":"json","Id":"1","Level":"LOG","Step":"Error","Timestamp":"20240701 094015.389"}]}';
 		def expectedJson = jsluper.parseText(jsonOut);
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
 		assert actualJson == expectedJson;
@@ -159,7 +159,7 @@ class CreateAuditLogNotificationTests extends BaseTests {
 
 		JsonSlurper jsluper = new JsonSlurper();
 
-		String jsonOut = '{"ProcessContext":{"TrackingId":"134567890","TrackedFields":"name#testit","Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","API":null,"MainProcessName":"Mock It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","Folder":"Mock/It"},"Auditlogitem":[{"Level":"LOG","Id":"1","Timestamp":"2024-07-01T09:40:15.389Z","Step":"Error","Details":"Test it","DocType":"json"}]}';
+		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"name#testit","TrackingId":"134567890"},"Auditlogitem":[{"Details":"Test it","DocType":"json","Id":"1","Level":"LOG","Step":"Error","Timestamp":"20240701 094015.389"}]}';
 		def expectedJson = jsluper.parseText(jsonOut);
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
 
@@ -188,13 +188,13 @@ class CreateAuditLogNotificationTests extends BaseTests {
 
 		JsonSlurper jsluper = new JsonSlurper();
 
-		String jsonOut = '{"ProcessContext":{"TrackingId":"134567890","TrackedFields":"name#testit","Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","API":null,"MainProcessName":"Mock It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","Folder":"Mock/It"},"Auditlogitem":[{"Level":"LOG","Id":"1","Timestamp":"2024-07-01T09:40:15.389Z","Step":"Error","Details":"Test it","DocType":"json","DocBase64":"eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0="}]}';
+		String jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"name#testit","TrackingId":"134567890"},"Auditlogitem":[{"Details":"Test it","DocBase64":"eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0=","DocType":"json","Id":"1","Level":"LOG","Step":"Error","Timestamp":"20240701 094015.389"}]}';
 		def expectedJson = jsluper.parseText(jsonOut);
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
 
 		assert actualJson == expectedJson;
 
-		jsonOut = '{"ProcessContext":{"TrackingId":"134567890","TrackedFields":"name#testit","Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","API":null,"MainProcessName":"Mock It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","Folder":"Mock/It"},"Auditlogitem":[{"Level":"LOG","Id":"1","Timestamp":"2024-07-01T09:40:15.389Z","Step":"Error","Details":"Test it","DocType":"json"},{"Level":"LOG","Id":"2","Timestamp":"2024-07-01T09:40:15.389Z","Step":"Warning","Details":"Test it again","DocType":"json"}]}'
+		jsonOut = '{"ProcessContext":{"API":null,"Container":"1a945e1-bb16-443c-9ef0-d7f91bf342a8","ExecutionId":"e546a65d-52b4-4acb-9577-e368491c7009","Folder":"Mock/It","MainProcessComponentId":"2466a0cf-2951-4d60-8ef7-548416c414ea","MainProcessName":"Mock It","TrackedFields":"name#testit","TrackingId":"134567890"},"Auditlogitem":[{"Details":"Test it","DocType":"json","Id":"1","Level":"LOG","Step":"Error","Timestamp":"20240701 094015.389"},{"Details":"Test it again","DocType":"json","Id":"2","Level":"LOG","Step":"Warning","Timestamp":"20240701 094016.389"}]}'
 		expectedJson = jsluper.parseText(jsonOut);
 		actualJson = jsluper.parseText(dataContext.getOutStreams()[1].getText());
 
@@ -205,7 +205,7 @@ class CreateAuditLogNotificationTests extends BaseTests {
 	void testSuccessAndCompress() {
 		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/core/createauditlognotification");
 
-		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_AUDITLOG_SIZE_MAX, "865");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_AUDITLOG_SIZE_MAX, "900");
 		LocalDateTime now = LocalDateTime.now();
 
 		new CreateAuditLogNotification(dataContext).executeWithoutFilterSortCombine();

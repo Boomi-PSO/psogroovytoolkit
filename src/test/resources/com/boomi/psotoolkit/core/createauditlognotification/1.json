@@ -3,7 +3,7 @@
 		{
 			"Level": "LOG",
 			"Id": "1",
-			"Timestamp": "2024-07-01T09:40:15.389Z",
+			"Timestamp": "20240701 094015.389",
 			"Step": "Error",
 			"Details": "Test it",
 			"DocType": "json",

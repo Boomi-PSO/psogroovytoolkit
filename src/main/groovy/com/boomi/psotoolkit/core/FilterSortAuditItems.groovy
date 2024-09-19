@@ -1,5 +1,6 @@
 package com.boomi.psotoolkit.core
 
+import com.boomi.BaseCommand
 import com.boomi.execution.ExecutionUtil;
 
 /**

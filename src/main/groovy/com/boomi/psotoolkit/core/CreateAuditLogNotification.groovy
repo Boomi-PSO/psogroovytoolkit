@@ -1,5 +1,7 @@
 package com.boomi.psotoolkit.core
 
+import com.boomi.BaseCommand
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.zip.Deflater;

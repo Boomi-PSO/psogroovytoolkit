@@ -1,5 +1,7 @@
 package com.boomi.psotoolkit.core
 
+import com.boomi.BaseCommand
+
 /* **************************************************************************
  Get DDP_FWK_ProcessCallStack
  IN : [Describe inbound arguments]
