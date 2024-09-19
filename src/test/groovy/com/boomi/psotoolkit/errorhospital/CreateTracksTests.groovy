@@ -2,14 +2,12 @@ package com.boomi.psotoolkit.errorhospital
 
 import com.boomi.execution.ExecutionUtil
 import com.boomi.psotoolkit.BaseTests
-import com.boomi.psotoolkit.core.CreateAuditLogNotification
-import com.boomi.psotoolkit.core.SetProcessCallStack
 import groovy.json.JsonSlurper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class CreateQueryTracksTests extends BaseTests {
+class CreateTracksTests extends BaseTests {
 
 	@BeforeEach
 	void setUp() {
@@ -22,9 +20,9 @@ class CreateQueryTracksTests extends BaseTests {
 
 	@Test
 	void testSuccessMulti() {
-		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/errorhospital/createquerytracksmedium");
+		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/errorhospital/createtracksmulti");
 
-		new CreateQueryTracks(dataContext).execute();
+		new CreateTracks(dataContext).execute();
 
 		JsonSlurper jsluper = new JsonSlurper();
 
@@ -43,9 +41,9 @@ class CreateQueryTracksTests extends BaseTests {
 
 	@Test
 	void testSuccessAllCases() {
-		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/errorhospital/createquerytracks");
+		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/errorhospital/createtracks");
 
-		new CreateQueryTracks(dataContext).execute();
+		new CreateTracks(dataContext).execute();
 
 		JsonSlurper jsluper = new JsonSlurper();
 

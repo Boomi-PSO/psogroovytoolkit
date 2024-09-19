@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.zip.Inflater
 
-class CreateQueryTracks  extends BaseCommand {
+class CreateTracks extends BaseCommand {
     // Constants
     private static final String SCRIPT_NAME = this.getSimpleName();
     private static final String UTF_8 = "UTF-8";
@@ -64,7 +64,7 @@ class CreateQueryTracks  extends BaseCommand {
     private static final String TRACKED_FIELDS_SPLIT_REGEX = ',|#';
     private static final String TRUNCATED_NOTIFICATION_WARNING = "WARNING: Error Message contains the truncated process notification!";
 
-    CreateQueryTracks(Object dataContext) {
+    CreateTracks(Object dataContext) {
         super(dataContext);
     }
 
