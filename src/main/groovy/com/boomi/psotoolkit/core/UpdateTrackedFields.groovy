@@ -1,6 +1,6 @@
 package com.boomi.psotoolkit.core
 
-import com.boomi.BaseCommand
+
 import com.boomi.execution.ExecutionUtil;
 //  Input:
 //      DDP_FWK_Tracking_Key<postfix>

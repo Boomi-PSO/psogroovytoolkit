@@ -1,6 +1,6 @@
 package com.boomi.psotoolkit.core
 
-import com.boomi.BaseCommand
+
 import groovy.json.JsonSlurper
 class ParseEnvelope extends CoreCommand {
 	// Constants

@@ -1,7 +1,4 @@
 package com.boomi.psotoolkit.core
-
-import com.boomi.BaseCommand
-
 /**
  * Description : This Groovy script sets dynamic process properties within the process execution context.
  *

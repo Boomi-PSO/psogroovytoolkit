@@ -1,6 +1,6 @@
 package com.boomi.psotoolkit.errorhospital
 
-import com.boomi.BaseCommand
+import com.boomi.psotoolkit.BaseCommand
 import groovy.json.JsonSlurper
 import groovy.json.StreamingJsonBuilder
 import org.codehaus.groovy.runtime.ReverseListIterator

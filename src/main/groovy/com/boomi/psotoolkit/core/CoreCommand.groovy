@@ -1,6 +1,6 @@
 package com.boomi.psotoolkit.core
 
-import com.boomi.BaseCommand;
+import com.boomi.psotoolkit.BaseCommand;
 
 abstract public class CoreCommand extends BaseCommand {
 

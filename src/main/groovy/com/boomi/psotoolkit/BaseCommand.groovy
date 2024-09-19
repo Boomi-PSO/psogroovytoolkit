@@ -1,7 +1,6 @@
-package com.boomi
+package com.boomi.psotoolkit
 
 import com.boomi.execution.ExecutionUtil
-import com.boomi.psotoolkit.core.MessageUtils
 
 abstract public class BaseCommand {
 
