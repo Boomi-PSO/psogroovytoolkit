@@ -17,7 +17,7 @@ import groovy.json.JsonBuilder;
  OUT: audit log JSON document "on the flow"
  ************************************************************************** */
 
-class CreateAuditLog extends BaseCommand {
+class CreateAuditLog extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	// Global

@@ -13,7 +13,7 @@ import com.boomi.execution.ExecutionUtil;
 //      DDP_FWK_ErrorMessage error message if invalid key/val pair input
 //
 
-class UpdateTrackedFields extends BaseCommand {
+class UpdateTrackedFields extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_PATH = "document.dynamic.userdefined.";

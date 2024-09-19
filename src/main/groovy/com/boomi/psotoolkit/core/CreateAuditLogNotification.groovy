@@ -24,7 +24,7 @@ import groovy.json.JsonSlurper;
  * **************************************************************************
  **/
 
-class CreateAuditLogNotification extends BaseCommand {
+class CreateAuditLogNotification extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_FWK_DOCSIZE = "document.dynamic.userdefined.DDP_FWK_DocSize";

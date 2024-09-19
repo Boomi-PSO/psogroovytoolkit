@@ -2,7 +2,7 @@ package com.boomi.psotoolkit.core
 
 import com.boomi.BaseCommand
 import com.boomi.execution.ExecutionUtil;
-class GetExecDuration extends BaseCommand {
+class GetExecDuration extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DPP_FWK_STARTTIME = "DPP_FWK_StartTime";

@@ -17,7 +17,7 @@ import groovy.json.JsonBuilder;
  DPP_FWK_WARN_LEVEL- true if level WARNING found
  ************************************************************************** */
 
-class CreateNotification extends BaseCommand {
+class CreateNotification extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_FWK_DOC_KEY = "document.dynamic.userdefined.DDP_FWK_DOC_KEY";

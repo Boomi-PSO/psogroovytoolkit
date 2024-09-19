@@ -5,7 +5,7 @@ import com.boomi.execution.ExecutionUtil
 
 import groovy.json.JsonBuilder
 
-class CreateEnvelope extends BaseCommand {
+class CreateEnvelope extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DPP_FWK_TRACKINGID = "DPP_FWK_TrackingId";
