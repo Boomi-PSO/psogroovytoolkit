@@ -7,7 +7,14 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+
+import static org.junit.jupiter.api.Assertions.fail;
+
 class CreateTracksTests extends BaseTests {
+	private static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyyMMdd HHmmss.SSS";
 
 	@BeforeEach
 	void setUp() {
@@ -58,5 +65,18 @@ class CreateTracksTests extends BaseTests {
 		assert actualJson.ErrorHospitalTracks[2].LogEntryCount == "5";
 		assert actualJson.ErrorHospitalTracks[3].LogEntryCount == "1";
 		assert actualJson.ErrorHospitalTracks[3].Status == "FAILED";
+		try {
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[1].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[2].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[3].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[0].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[1].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[2].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			LocalDateTime.parse(actualJson.ErrorHospitalTracks[3].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+		}
+		catch (DateTimeParseException dtpe) {
+			fail(dtpe.getMessage());
+		}
 	}
 }

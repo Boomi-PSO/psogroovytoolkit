@@ -26,8 +26,7 @@ class CreateTracks extends BaseCommand {
     private static final String NOTIFIED = "NOTIFIED";
     private static final String SUCCESS = "SUCCESS";
     private static final String LEVEL = "Level";
-    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HHmmss.SSS'Z'"
-    private static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyyMMdd HHmmss.SSS"
+    private static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyyMMdd HHmmss.SSS";
     private static final String TIMESTAMP = 'Timestamp';
     private static final String DURATION = 'DurationInMillis';
     private static final String TRACKING_ID = 'TrackingId';
@@ -137,8 +136,7 @@ class CreateTracks extends BaseCommand {
         List<Map<String, String>> logEntries = [];
         Map<String, String> logEntry = [:] as Map;
         logEntry.put(INTERNAL_ID, auditLog.Auditlogitem[0].Id);
-        LocalDateTime ldt = LocalDateTime.parse(auditLog.Auditlogitem[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-        logEntry.put(TIMESTAMP, ldt.format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)));
+        logEntry.put(TIMESTAMP, auditLog.Auditlogitem[0].Timestamp);
         logEntry.put(LEVEL, auditLog.Auditlogitem[0].Level);
         logEntry.put(HAS_ERRORS, YES);
         logEntry.put(ERROR_MESSAGE, auditLog.ProcessContext.TruncatedData);
@@ -222,10 +220,10 @@ class CreateTracks extends BaseCommand {
         int auditLogSize = auditLog?.Auditlogitem.size();
         if (auditLogSize) {
             String firstTimestamp = auditLog.Auditlogitem[0].Timestamp;
-            String lastTimestamp = auditLog.Auditlogitem[auditLogSize - 1].Timestamp;
             LocalDateTime firstldt = LocalDateTime.parse(firstTimestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-            trackEntry.put(TIMESTAMP, firstldt.format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)));
+            String lastTimestamp = auditLog.Auditlogitem[auditLogSize - 1].Timestamp;
             LocalDateTime lastldt = LocalDateTime.parse(lastTimestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+            trackEntry.put(TIMESTAMP, firstTimestamp);
             trackEntry.put(DURATION, Duration.between(firstldt, lastldt).toMillis());
         }
     }
@@ -248,8 +246,7 @@ class CreateTracks extends BaseCommand {
     // Add audit Log Item Fields
     private void addAuditLogItemDetails(def auditLogItem, Map<String, String> logEntry) {
         logEntry.put(INTERNAL_ID, auditLogItem.Id);
-        LocalDateTime ldt = LocalDateTime.parse(auditLogItem.Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-        logEntry.put(TIMESTAMP, ldt.format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)));
+        logEntry.put(TIMESTAMP, auditLogItem.Timestamp);
         if (LOG.equals(auditLogItem.get(LEVEL))) {
             logEntry.put(LEVEL, TRACK);
             logEntry.put(HAS_ERRORS, NO);
