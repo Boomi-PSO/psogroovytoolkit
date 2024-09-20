@@ -27,6 +27,7 @@ class CreateTracks extends BaseCommand {
     private static final String SUCCESS = "SUCCESS";
     private static final String LEVEL = "Level";
     private static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyyMMdd HHmmss.SSS";
+    private static final String EDIFACT = 'EDIFACT';
     private static final String TIMESTAMP = 'Timestamp';
     private static final String DURATION = 'DurationInMillis';
     private static final String TRACKING_ID = 'TrackingId';
@@ -87,7 +88,7 @@ class CreateTracks extends BaseCommand {
                 auditLog = jSlurper.parseText(decompressDecode(auditLog.ProcessContext.CompressedData));
             }
             // Create List Objects
-            errorProcessList.add(auditLog.ProcessContext.MainProcessName);
+            errorProcessList.add(auditLog?.ProcessContext?.MainProcessName);
             folderList.add(getTrackedProcess(auditLog));
             addTrackedFieldNames(trackedFieldsList, auditLog.ProcessContext.TrackedFields);
             // If data was truncated handle differently
@@ -262,6 +263,9 @@ class CreateTracks extends BaseCommand {
         logEntry.put(DOCUMENT_TYPE, auditLogItem.DocType);
         if (auditLogItem.DocBase64) {
             logEntry.put(DOCUMENT_BASE64_DECODED, new String(Base64.getDecoder().decode(auditLogItem.DocBase64)));
+        }
+        if (auditLogItem.EDIFACT) {
+            logEntry.put(EDIFACT, auditLogItem.EDIFACT);
         }
         logEntry.put(PROCESS_STEP, auditLogItem.Step);
         logEntry.put(PROCESS_CALL_STACK, auditLogItem.ProcessCallStack);

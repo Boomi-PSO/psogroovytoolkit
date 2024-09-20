@@ -55,9 +55,9 @@ class CreateTracksTests extends BaseTests {
 		JsonSlurper jsluper = new JsonSlurper();
 
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
-		assert actualJson.TrackCount == "4";
-		assert actualJson.ErrorProcessesList.size() == 2;
-		assert actualJson.FolderList.size() == 2;
+		assert actualJson.TrackCount == "5";
+		assert actualJson.ErrorProcessesList.size() == 3;
+		assert actualJson.FolderList.size() == 3;
 		assert actualJson.TrackedFieldNames.size() == 3;
 		assert actualJson.ErrorHospitalTracks[0].DurationInMillis == 2680;
 		assert actualJson.ErrorHospitalTracks[0].LogEntryCount == "3";
@@ -78,5 +78,8 @@ class CreateTracksTests extends BaseTests {
 		catch (DateTimeParseException dtpe) {
 			fail(dtpe.getMessage());
 		}
+		assert actualJson.ErrorHospitalTracks[4].LogEntries[1].EDIFACT
+		assert actualJson.ErrorHospitalTracks[4].LogEntries[1].EDIFACT.senderId == "SUORG";
+		assert actualJson.ErrorHospitalTracks[4].LogEntries[1].EDIFACT.receiverId == "TECCOM";
 	}
 }
