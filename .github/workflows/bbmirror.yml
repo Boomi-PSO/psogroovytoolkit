@@ -1,0 +1,19 @@
+name: Mirror ButBucket
+
+on: 
+  workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # <-- clone with complete history
+    - name: Push
+      uses: heussd/mirror-to-bitbucket-github-action@v2
+      with:
+        username: MarkLBoomi
+        spacename: boomii
+        repository: Boomi-PSO-Groovy-Toolkit
+        password: ${{ secrets.BITBUCKET_PASSWORD }}
