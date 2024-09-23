@@ -65,6 +65,7 @@ class CreateTracksTests extends BaseTests {
 		assert actualJson.ErrorHospitalTracks[0].TrackedProcess == "Integration Toolkit Release/!Release (2024-07-04)/0-Common/03-Templates/fseq-MyLOB/fseq-MyEDIIntegration/fseq-MySrcAppMySrcObject-to-MyTradingPartnerMyEDIMessage EDI";
 		assert actualJson.ErrorHospitalTracks[0].LogEntryCount == "3";
 		assert actualJson.ErrorHospitalTracks[1].TrackingId == "511859245380735359";
+		assert actualJson.ErrorHospitalTracks[1].Status == "SUCCESS_WITH_WARNING";
 		assert actualJson.ErrorHospitalTracks[1].TrackedProcess == "INT-539/02020-Unit Tests";
 		assert actualJson.ErrorHospitalTracks[1].LogEntryCount == "3";
 		assert actualJson.ErrorHospitalTracks[2].TrackingId == "3868131820876138597";

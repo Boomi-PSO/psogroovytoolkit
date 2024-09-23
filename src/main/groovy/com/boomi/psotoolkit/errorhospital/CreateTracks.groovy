@@ -21,6 +21,8 @@ class CreateTracks extends BaseCommand {
     private static final String DDP_FWK_NS_ACCOUNT = "document.dynamic.userdefined.DDP_FWK_NS_ACCOUNT";
     private static final String LOG = "LOG";
     private static final String ERROR = "ERROR";
+    private static final String WARNING = "WARNING";
+    private static final String SUCCESS_WITH_WARNING = "SUCCESS_WITH_WARNING"
     private static final String EMAIL = "e-mail";
     private static final String FAILED = "FAILED";
     private static final String NOTIFIED = "NOTIFIED";
@@ -235,6 +237,7 @@ class CreateTracks extends BaseCommand {
         trackEntry.put(TRACKED_PROCESS, getTrackedProcess(auditLog));
         List<Map<String, String>> logEntries = [];
         int emailStepCount = 0;
+        int warningCount = 0;
         int errorCount = 0;
         ReverseListIterator auditLogItems = new ReverseListIterator(auditLog.Auditlogitem);
         auditLogItems.each { auditLogItem ->
@@ -243,14 +246,19 @@ class CreateTracks extends BaseCommand {
             addProcessContextDetails(auditLog.ProcessContext, logEntry);
             addPropertyDetails(props,logEntry);
             logEntries.add(logEntry.findAll {it.value});
+            // count errors and warnings
             if (auditLogItem.Level == ERROR) {
                 errorCount++
             }
+            else if (auditLogItem.Level == WARNING) {
+                warningCount++
+            }
+            // count email steps
             if (auditLogItem?.Step?.toLowerCase() == EMAIL) {
                 emailStepCount++;
             }
         }
-        trackEntry.put(STATUS, getStatus(errorCount, emailStepCount));
+        trackEntry.put(STATUS, getStatus(warningCount, errorCount, emailStepCount));
         trackEntry.put(LOG_ENTRY_COUNT, logEntries.size().toString());
         trackEntry.put(LOG_ENTRIES, logEntries);
         return trackEntry;
@@ -277,12 +285,14 @@ class CreateTracks extends BaseCommand {
         }
     }
     // Get Status depending on number of errors and email steps
-    private Object getStatus(int errorCount, int emailStepCount) {
+    private Object getStatus(int warningCount, int errorCount, int emailStepCount) {
         String status;
         if (errorCount > 0 && emailStepCount == 0) {
             status = FAILED;
         } else if (errorCount > 0 && emailStepCount > 0) {
             status = NOTIFIED;
+        } else if (warningCount > 0) {
+            status = SUCCESS_WITH_WARNING;
         } else {
             status = SUCCESS;
         }
