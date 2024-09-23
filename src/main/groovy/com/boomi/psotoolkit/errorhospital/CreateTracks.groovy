@@ -35,7 +35,7 @@ class CreateTracks extends BaseCommand {
     private static final String TRACKING_ID = 'TrackingId';
     private static final String TRACKED_PROCESS = 'TrackedProcess';
     private static final String TRACKED_FIELDS = 'TrackedFields';
-    private static final String LOG_ENTRY_COUNT = 'LogEntryCount';
+    private static final String ALERT_COUNT = 'AlertCount';
     private static final String STATUS = 'Status';
     private static final String LOG_ENTRIES = 'LogEntries';
     private static final String TRACK = 'TRACK';
@@ -133,7 +133,7 @@ class CreateTracks extends BaseCommand {
         Integer totalDurationMillis = 0;
         Set combinedTrackedFields = [] as Set;
         String status = SUCCESS;
-        Integer totalLogEntries = 0;
+        Integer alertCount = 0;
         trackEntries.each { Map trackEntry ->
             totalDurationMillis += trackEntry.get(DURATION);
             String trackedFields = trackEntry.get(TRACKED_FIELDS);
@@ -144,7 +144,7 @@ class CreateTracks extends BaseCommand {
                 status = FAILED;
             }
             List logEntries = trackEntry.get(LOG_ENTRIES);
-            totalLogEntries += logEntries.size();
+            alertCount += trackEntry.get(ALERT_COUNT).toInteger();
             mergedLogEntries.addAll(logEntries);
         }
         mergedLogEntries.sort { Map a, Map b ->
@@ -158,7 +158,7 @@ class CreateTracks extends BaseCommand {
         }
         mergedTrack.put(TRACKED_PROCESS, getTrackedProcess(mergedLogEntries.get(mergedLogEntries.size() - 1).get(FOLDER)));
         mergedTrack.put(STATUS, status);
-        mergedTrack.put(LOG_ENTRY_COUNT, totalLogEntries.toString());
+        mergedTrack.put(ALERT_COUNT, alertCount.toString());
         mergedTrack.put(LOG_ENTRIES, mergedLogEntries);
         return mergedTrack;
     }
@@ -198,6 +198,7 @@ class CreateTracks extends BaseCommand {
     // Build Truncated Data Error Track
     private Map buildTruncatedDataTrackEntry(def auditLog, Properties props) {
         Map trackEntry = [:];
+        Integer alertCount = 0;
         addTimestampAndDuration(auditLog, trackEntry);
         trackEntry.put(TRACKING_ID, auditLog.ProcessContext.TrackingId);
         trackEntry.put(TRACKED_FIELDS, auditLog.ProcessContext.TrackedFields);
@@ -207,6 +208,9 @@ class CreateTracks extends BaseCommand {
         logEntry.put(INTERNAL_ID, auditLog.Auditlogitem[0].Id);
         logEntry.put(TIMESTAMP, auditLog.Auditlogitem[0].Timestamp);
         logEntry.put(LEVEL, auditLog.Auditlogitem[0].Level);
+        if (auditLog.Auditlogitem[0].Level == ERROR) {
+            alertCount++;
+        }
         logEntry.put(HAS_ERRORS, YES);
         logEntry.put(ERROR_MESSAGE, auditLog.ProcessContext.TruncatedData);
         logEntry.put(ERROR_CLASS, auditLog.Auditlogitem[0].ErrorClass);
@@ -222,7 +226,7 @@ class CreateTracks extends BaseCommand {
         addPropertyDetails(props, logEntry);
         logEntries.add(logEntry.findAll {it.value});
         trackEntry.put(LOG_ENTRIES, logEntries);
-        trackEntry.put(LOG_ENTRY_COUNT, logEntries.size().toString());
+        trackEntry.put(ALERT_COUNT, alertCount.toString());
         trackEntry.put(STATUS, FAILED);
         return trackEntry;
     }
@@ -259,7 +263,7 @@ class CreateTracks extends BaseCommand {
             }
         }
         trackEntry.put(STATUS, getStatus(warningCount, errorCount, emailStepCount));
-        trackEntry.put(LOG_ENTRY_COUNT, logEntries.size().toString());
+        trackEntry.put(ALERT_COUNT, (warningCount + errorCount).toString());
         trackEntry.put(LOG_ENTRIES, logEntries);
         return trackEntry;
     }
