@@ -62,6 +62,7 @@ class CreateTracks extends BaseCommand {
     private static final String DOCUMENT_BASE64_DECODED = 'DocumentBase64Decoded';
     private static final String FORWARD_SLASH = '/';
     private static final String TRACKED_FIELDS_SPLIT_REGEX = ',|#';
+    private static final String COMMA = ',';
     private static final String TRUNCATED_NOTIFICATION_WARNING = "WARNING: Error Message contains the truncated process notification!";
 
     CreateTracks(Object dataContext) {
@@ -78,6 +79,7 @@ class CreateTracks extends BaseCommand {
         Set folderList = [] as Set;
         Set trackedFieldsList = [] as Set;
         List errorHospitalTracks = [];
+        Map trackGroups = [:];
         // Loop Event XML Objects
         for (int docNo = 0; docNo < dataContext.getDataCount(); docNo++) {
             Properties props = dataContext.getProperties(docNo);
@@ -93,16 +95,80 @@ class CreateTracks extends BaseCommand {
             addTrackedFieldNames(trackedFieldsList, auditLog.ProcessContext.TrackedFields);
             // If data was truncated handle differently
             if (auditLog?.ProcessContext?.TruncatedData) {
-                errorHospitalTracks.add(buildTruncatedDataTrackEntry(auditLog, props));
+                groupTracks(trackGroups, buildTruncatedDataTrackEntry(auditLog, props));
             }
             // Process Audit Log
             else {
-                errorHospitalTracks.add(buildStandardTrackEntry(auditLog, props));
+                groupTracks(trackGroups, buildStandardTrackEntry(auditLog, props));
             }
             allProps.putAll(props);
         }
+        // Group all Tracks with same Tracking Id, then merge if necessary
+        groupLogEntriesbyTrack(errorHospitalTracks, trackGroups);
+        // Output document
         storeDocument(errorHospitalTracks, errorProcessList, folderList, trackedFieldsList, allProps);
 
+    }
+    // Group all log entries with the same tracking Id
+    // Sum durations and log entry count, concat tracked fields, adjust status
+    private void groupLogEntriesbyTrack(List errorHospitalTracks, Map trackGroups) {
+        trackGroups.each {String trackingId, List trackEntries ->
+            if (trackEntries.size() == 1) {
+                errorHospitalTracks.add(trackEntries[0]);
+            }
+            else {
+                errorHospitalTracks.add(mergeLogEntries(trackEntries));
+            }
+        }
+        errorHospitalTracks.sort { Map a, Map b ->
+            b.get(TIMESTAMP) <=> a.get(TIMESTAMP);
+        }
+    }
+    // Merge all log entries with the same tracking id
+    private Map mergeLogEntries(List trackEntries) {
+        Map mergedTrack= [:];
+        List mergedLogEntries = [];
+        Integer totalDurationMillis = 0;
+        Set combinedTrackedFields = [] as Set;
+        String status = SUCCESS;
+        Integer totalLogEntries = 0;
+        trackEntries.each { Map trackEntry ->
+            totalDurationMillis += trackEntry.get(DURATION);
+            String trackedFields = trackEntry.get(TRACKED_FIELDS);
+            if (trackedFields) {
+                combinedTrackedFields.addAll(trackedFields.split(COMMA));
+            }
+            if (trackEntry.get(STATUS) == FAILED) {
+                status = FAILED;
+            }
+            List logEntries = trackEntry.get(LOG_ENTRIES);
+            totalLogEntries += logEntries.size();
+            mergedLogEntries.addAll(logEntries);
+        }
+        mergedLogEntries.sort { Map a, Map b ->
+            b.get(TIMESTAMP) <=> a.get(TIMESTAMP);
+        }
+        mergedTrack.put(TIMESTAMP, mergedLogEntries.get(mergedLogEntries.size() - 1).get(TIMESTAMP));
+        mergedTrack.put(DURATION, totalDurationMillis);
+        mergedTrack.put(TRACKING_ID, trackEntries[0].get(TRACKING_ID));
+        if (combinedTrackedFields.size() > 0) {
+            mergedTrack.put(TRACKED_FIELDS, combinedTrackedFields.join(COMMA));
+        }
+        mergedTrack.put(TRACKED_PROCESS, getTrackedProcess(mergedLogEntries.get(mergedLogEntries.size() - 1).get(FOLDER)));
+        mergedTrack.put(STATUS, status);
+        mergedTrack.put(LOG_ENTRY_COUNT, totalLogEntries.toString());
+        mergedTrack.put(LOG_ENTRIES, mergedLogEntries);
+        return mergedTrack;
+    }
+    // Groups all tracks by tracking Id
+    private void groupTracks(Map trackGroups, Map trackEntry) {
+        String trackingId = trackEntry.get(TRACKING_ID);
+        List tracks = trackGroups.get(trackingId);
+        if (!tracks) {
+            tracks = [];
+            trackGroups.put(trackingId, tracks);
+        }
+        tracks.add(trackEntry);
     }
     // Store result in ouput stream
     private void storeDocument(List errorHospitalTracks, Set errorProcessList, Set folderList, Set trackedFieldsList, Properties allProps) {
@@ -163,7 +229,9 @@ class CreateTracks extends BaseCommand {
         Map trackEntry = [:];
         addTimestampAndDuration(auditLog, trackEntry);
         trackEntry.put(TRACKING_ID, auditLog.ProcessContext.TrackingId);
-        trackEntry.put(TRACKED_FIELDS, auditLog.ProcessContext.TrackedFields);
+        if (auditLog.ProcessContext.TrackedFields) {
+            trackEntry.put(TRACKED_FIELDS, auditLog.ProcessContext.TrackedFields);
+        }
         trackEntry.put(TRACKED_PROCESS, getTrackedProcess(auditLog));
         List<Map<String, String>> logEntries = [];
         int emailStepCount = 0;
@@ -187,9 +255,13 @@ class CreateTracks extends BaseCommand {
         trackEntry.put(LOG_ENTRIES, logEntries);
         return trackEntry;
     }
-    // Tracked Process is derived form the Folder
+    // Tracked Process is derived form the auditlog's Folder
     private String getTrackedProcess(def auditLog) {
-        String trackedProcess = auditLog?.ProcessContext?.Folder;
+        return getTrackedProcess(auditLog?.ProcessContext?.Folder);
+    }
+    // Tracked Process is derived form the Folder
+    private String getTrackedProcess(String folder) {
+        String trackedProcess = folder;
         int nthIndex = nthIndexOf(trackedProcess, FORWARD_SLASH, 2)
         if (nthIndex > 0) {
             trackedProcess = trackedProcess.substring(nthIndex + 1)

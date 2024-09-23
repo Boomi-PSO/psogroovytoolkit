@@ -38,12 +38,13 @@ class CreateTracksTests extends BaseTests {
 		assert actualJson.ErrorProcessesList.size() == 2;
 		assert actualJson.FolderList.size() == 2;
 		assert actualJson.TrackedFieldNames.size() == 2;
-		assert actualJson.ErrorHospitalTracks[0].DurationInMillis == 106;
+		assert actualJson.ErrorHospitalTracks[0].DurationInMillis == 133;
 		assert actualJson.ErrorHospitalTracks[0].LogEntryCount == "3";
 		assert actualJson.ErrorHospitalTracks[0].Status == "SUCCESS";
 		actualJson.ErrorHospitalTracks[0].LogEntries.each { logEntry ->
 			assert logEntry.Level == "TRACK"
 		}
+		commonTimestampVerifications(actualJson);
 	}
 
 	@Test
@@ -55,31 +56,52 @@ class CreateTracksTests extends BaseTests {
 		JsonSlurper jsluper = new JsonSlurper();
 
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
-		assert actualJson.TrackCount == "5";
+		assert actualJson.TrackCount == "4";
 		assert actualJson.ErrorProcessesList.size() == 3;
 		assert actualJson.FolderList.size() == 3;
 		assert actualJson.TrackedFieldNames.size() == 3;
-		assert actualJson.ErrorHospitalTracks[0].DurationInMillis == 2680;
+		assert actualJson.ErrorHospitalTracks[0].DurationInMillis == 8445;
+		assert actualJson.ErrorHospitalTracks[0].TrackingId == "7602435411494734444";
+		assert actualJson.ErrorHospitalTracks[0].TrackedProcess == "Integration Toolkit Release/!Release (2024-07-04)/0-Common/03-Templates/fseq-MyLOB/fseq-MyEDIIntegration/fseq-MySrcAppMySrcObject-to-MyTradingPartnerMyEDIMessage EDI";
 		assert actualJson.ErrorHospitalTracks[0].LogEntryCount == "3";
+		assert actualJson.ErrorHospitalTracks[1].TrackingId == "511859245380735359";
+		assert actualJson.ErrorHospitalTracks[1].TrackedProcess == "INT-539/02020-Unit Tests";
 		assert actualJson.ErrorHospitalTracks[1].LogEntryCount == "3";
-		assert actualJson.ErrorHospitalTracks[2].LogEntryCount == "5";
-		assert actualJson.ErrorHospitalTracks[3].LogEntryCount == "1";
+		assert actualJson.ErrorHospitalTracks[2].TrackingId == "3868131820876138597";
+		assert actualJson.ErrorHospitalTracks[2].TrackedProcess == "INT-539/02020-Unit Tests";
+		assert actualJson.ErrorHospitalTracks[2].LogEntryCount == "3";
+		assert actualJson.ErrorHospitalTracks[3].TrackingId == "134567890";
+		assert actualJson.ErrorHospitalTracks[3].LogEntryCount == "6";
 		assert actualJson.ErrorHospitalTracks[3].Status == "FAILED";
+		assert actualJson.ErrorHospitalTracks[3].TrackedFields == "name#testit,TRUNCATED#111";
+		assert actualJson.ErrorHospitalTracks[3].TrackedProcess == "Mock/It";
+		commonTimestampVerifications(actualJson);
+		assert actualJson.ErrorHospitalTracks[0].LogEntries[1].EDIFACT
+		assert actualJson.ErrorHospitalTracks[0].LogEntries[1].EDIFACT.senderId == "SUORG";
+		assert actualJson.ErrorHospitalTracks[0].LogEntries[1].EDIFACT.receiverId == "TECCOM";
+	}
+
+	void commonTimestampVerifications(def actualJson) {
 		try {
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[1].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[2].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[3].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[0].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[1].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[2].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-			LocalDateTime.parse(actualJson.ErrorHospitalTracks[3].LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			actualJson.ErrorHospitalTracks.each { errorTrack ->
+				LocalDateTime.parse(errorTrack.Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			}
 		}
 		catch (DateTimeParseException dtpe) {
 			fail(dtpe.getMessage());
 		}
-		assert actualJson.ErrorHospitalTracks[4].LogEntries[1].EDIFACT
-		assert actualJson.ErrorHospitalTracks[4].LogEntries[1].EDIFACT.senderId == "SUORG";
-		assert actualJson.ErrorHospitalTracks[4].LogEntries[1].EDIFACT.receiverId == "TECCOM";
+
+		try {
+			actualJson.ErrorHospitalTracks.each { errorTrack ->
+				LocalDateTime.parse(errorTrack.LogEntries[0].Timestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
+			}
+		}
+		catch (DateTimeParseException dtpe) {
+			fail(dtpe.getMessage());
+		}
+
+		actualJson.ErrorHospitalTracks.each { errorTrack ->
+			assert errorTrack.Timestamp == errorTrack.LogEntries[errorTrack.LogEntries.size() - 1].Timestamp;
+		}
 	}
 }
