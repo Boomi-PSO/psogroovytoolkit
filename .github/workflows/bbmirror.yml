@@ -15,5 +15,5 @@ jobs:
       with:
         username: MarkLBoomi
         spacename: boomii
-        repository: Boomi-PSO-Groovy-Toolkit
+        repository: PSO-Groovy-Toolkit
         password: ${{ secrets.BITBUCKET_PASSWORD }}
