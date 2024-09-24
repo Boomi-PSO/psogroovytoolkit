@@ -1,5 +1,4 @@
 package com.boomi.psotoolkit.core
-
 /* **************************************************************************
  Get DDP_FWK_ProcessCallStack
  IN : [Describe inbound arguments]
@@ -9,7 +8,7 @@ import com.boomi.execution.ExecutionManager;
 import com.boomi.execution.ExecutionTask;
 import com.boomi.execution.ExecutionUtil;
 
-class SetProcessCallStack extends BaseCommand {
+class SetProcessCallStack extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_FWK_NS_LEVEL = "document.dynamic.userdefined.DDP_FWK_NS_LEVEL"

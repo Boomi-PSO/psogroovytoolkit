@@ -1,5 +1,6 @@
 package com.boomi.psotoolkit.core
 
+
 import com.boomi.execution.ExecutionUtil;
 
 /**
@@ -16,7 +17,7 @@ import com.boomi.execution.ExecutionUtil;
  * Output:
  *       audit log record "on the flow""- filtered and sorted
  **/
-class FilterSortAuditItems extends BaseCommand {
+class FilterSortAuditItems extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DDP_FWK_SORT_TS = "document.dynamic.userdefined.DDP_FWK_SORT_TS";

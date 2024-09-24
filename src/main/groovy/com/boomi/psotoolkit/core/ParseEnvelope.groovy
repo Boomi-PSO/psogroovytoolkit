@@ -1,7 +1,8 @@
 package com.boomi.psotoolkit.core
 
+
 import groovy.json.JsonSlurper
-class ParseEnvelope extends BaseCommand {
+class ParseEnvelope extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String UTF8 = "UTF-8";

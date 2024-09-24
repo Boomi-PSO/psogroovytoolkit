@@ -1,5 +1,6 @@
 package com.boomi.psotoolkit.core
 
+
 import com.boomi.execution.ExecutionManager;
 import com.boomi.execution.ExecutionTask;
 import com.boomi.execution.ExecutionUtil;
@@ -23,7 +24,7 @@ import groovy.json.JsonSlurper;
  ------------------------------------------------
  ************************************************************************** */
 
-class SetContext extends BaseCommand {
+class SetContext extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DPP_FWK_DISABLE_NOTIFICATION_DEFAULT = "DPP_FWK_DISABLE_NOTIFICATION_DEFAULT";

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Event xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bns:Event" xmlns="http://api.platform.boomi.com/">
+    <bns:eventId xmlns:bns="http://api.platform.boomi.com/">event-5df435aa-3b01-4af3-be16-93f504ab28b4</bns:eventId>
+    <bns:accountId xmlns:bns="http://api.platform.boomi.com/">boomi_marklevine-IRYLEC</bns:accountId>
+    <bns:atomId xmlns:bns="http://api.platform.boomi.com/">7bd087a3-6a94-4afd-a609-fd62d48781a5</bns:atomId>
+    <bns:atomName xmlns:bns="http://api.platform.boomi.com/">Test Cloud Atom</bns:atomName>
+    <bns:eventLevel xmlns:bns="http://api.platform.boomi.com/">ERROR</bns:eventLevel>
+    <bns:eventDate xmlns:bns="http://api.platform.boomi.com/">2024-09-16T12:59:35Z</bns:eventDate>
+    <bns:status xmlns:bns="http://api.platform.boomi.com/">
+        {"ProcessContext":{"API":null,"Container":"atom04","ExecutionId":"execution-a9a74bf4-7080-45fc-9ed6-344926047e8d-2024.09.20","Folder":"Boomi_MarkLevine/02-Integrations/Integration Toolkit Release/!Release (2024-07-04)/0-Common/03-Templates/fseq-MyLOB/fseq-MyEDIIntegration/fseq-MySrcAppMySrcObject-to-MyTradingPartnerMyEDIMessage EDI","MainProcessComponentId":"e787a2e4-ba43-40c6-a0c6-586f71dcd9cd","MainProcessName":"[fseq] MyLOB MyEDIIntegration MySrcAppMySrcObject-to-MyTradingPartnerMyEDIMessage EDI (main)","TrackedFields":null,"TrackingId":"7602435411494734445"},"Auditlogitem":[{"Details":"","DocBase64":null,"DocType":null,"Id":"8515755697630307864","Level":"LOG","Step":"[FWK] SET Context (route)","Timestamp":"2022-09-24T12:43:15.285Z"},{"DocBase64":"VU5CK1VOT0E6MStTVU9SRzpaWlo6MTQrVEVDQ09NOlpaWjoxNCsyNDA5MjA6MTI0MysyKysrKysrMSdVTkgrMSsgOkQ6MDlCOlVOJ1VOVCsyKzEnVU5aKzErMic=","DocType":"EDIDOC_OUT","EDIFACT":{"delimiter":"+","interchangeCtlRef":"2","interchangeDate":"240920","interchangeTime":"1243","messageType":" ","receiverId":"TECCOM","receiverIdQual":"ZZZ","senderId":"SUORG","senderIdQual":"ZZZ","syntaxId":"UNOA","syntaxVersionNo":"1"},"Id":"4389036290659994825","Level":"LOG","Step":"EDIFACT Document - Outbound","Timestamp":"2022-09-24T12:43:18.060Z"},{"Details":"","DocBase64":null,"DocType":null,"Id":"3599077331568483204","Level":"LOG","Step":"[FWK] CLOSE Context (route) (Continuation f_0)","Timestamp":"2022-09-24T12:43:23.730Z"}]}
+        </bns:status>
+<bns:eventType xmlns:bns="http://api.platform.boomi.com/">user.notification</bns:eventType>
+<bns:executionId xmlns:bns="http://api.platform.boomi.com/">execution-1ff4d82a-64b8-4c7c-946b-fd498eba0856-2024.09.16</bns:executionId>
+<bns:title xmlns:bns="http://api.platform.boomi.com/">ERROR NOTIFICATION</bns:title>
+<bns:updateDate xmlns:bns="http://api.platform.boomi.com/">2024-09-16T12:59:35Z</bns:updateDate>
+<bns:errorDocumentCount xmlns:bns="http://api.platform.boomi.com/">0</bns:errorDocumentCount>
+<bns:inboundDocumentCount xmlns:bns="http://api.platform.boomi.com/">0</bns:inboundDocumentCount>
+<bns:outboundDocumentCount xmlns:bns="http://api.platform.boomi.com/">0</bns:outboundDocumentCount>
+<bns:processName xmlns:bns="http://api.platform.boomi.com/">[FWK] CLOSE Context (route) (Continuation f_0)</bns:processName>
+<bns:recordDate xmlns:bns="http://api.platform.boomi.com/">2024-09-16T12:59:51Z</bns:recordDate>
+<bns:environment xmlns:bns="http://api.platform.boomi.com/">test-in-cloud</bns:environment>
+<bns:classification xmlns:bns="http://api.platform.boomi.com/">TEST</bns:classification>
+<bns:topLevelProcessId xmlns:bns="http://api.platform.boomi.com/">0a469ebb-9079-499d-98ac-d5778373fa18</bns:topLevelProcessId>
+<bns:processId xmlns:bns="http://api.platform.boomi.com/">b52d7c21-a5cd-4d88-8bfc-cf0f27b8c4f5</bns:processId>
+        </Event>

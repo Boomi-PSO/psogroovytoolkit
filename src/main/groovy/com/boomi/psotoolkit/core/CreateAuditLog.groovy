@@ -1,5 +1,6 @@
 package com.boomi.psotoolkit.core
 
+
 import java.security.SecureRandom
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +16,7 @@ import groovy.json.JsonBuilder;
  OUT: audit log JSON document "on the flow"
  ************************************************************************** */
 
-class CreateAuditLog extends BaseCommand {
+class CreateAuditLog extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	// Global

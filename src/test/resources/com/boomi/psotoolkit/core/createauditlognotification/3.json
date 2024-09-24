@@ -3,7 +3,7 @@
 		{
 			"Level": "LOG",
 			"Id": "1",
-			"Timestamp": "2024-07-01T09:40:15.389Z",
+			"Timestamp": "20240701 094015.389",
 			"Step": "Error",
 			"Details": "Test it",
 			"DocType": "json",
@@ -12,7 +12,7 @@
 		{
 			"Level": "LOG",
 			"Id": "2",
-			"Timestamp": "2024-07-01T09:40:15.389Z",
+			"Timestamp": "20240701 094016.389",
 			"Step": "Warning",
 			"Details": "Test it again",
 			"DocType": "json",
@@ -21,25 +21,25 @@
 		{
 			"Level": "LOG",
 			"Id": "3",
-			"Timestamp": "2024-07-01T09:40:15.389Z",
+			"Timestamp": "20240701 094017.389",
 			"Step": "Warning",
 			"Details": "Test it again",
 			"DocType": "json",
 			"DocBase64": "eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0="
 		},
 		{
-			"Level": "LOG",
+			"Level": "ERROR",
 			"Id": "4",
-			"Timestamp": "2024-07-01T09:40:15.389Z",
-			"Step": "Warning",
-			"Details": "Test it again",
+			"Timestamp": "20240701 094018.389",
+			"Step": "Notification",
+			"Details": "Test it an error now",
 			"DocType": "json",
 			"DocBase64": "eyJERFBfRG9jdW1lbnRJZCI6IjY4MjUxNzcxNTQ5ODk3MDM3NDciLCJERFBfUHJldmlvdXNFdmVudElkIjoiNTQ0In0="
 		},
 		{
 			"Level": "LOG",
 			"Id": "5",
-			"Timestamp": "2024-07-01T09:40:15.389Z",
+			"Timestamp": "20240701 094019.389",
 			"Step": "Warning",
 			"Details": "Test it again",
 			"DocType": "json",

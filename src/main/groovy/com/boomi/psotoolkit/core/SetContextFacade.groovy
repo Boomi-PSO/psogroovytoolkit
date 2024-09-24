@@ -1,5 +1,4 @@
 package com.boomi.psotoolkit.core
-
 /**
  * Description : This Groovy script sets dynamic process properties within the process execution context.
  *
@@ -12,7 +11,7 @@ package com.boomi.psotoolkit.core
 
 import com.boomi.execution.ExecutionManager;
 import com.boomi.execution.ExecutionUtil;
-class SetContextFacade extends BaseCommand {
+class SetContextFacade extends CoreCommand {
 	// Constants
 	private static final String SCRIPT_NAME = this.getSimpleName();
 	private static final String DPP_FWK_DIRECTORY = "DPP_FWK_Directory";
