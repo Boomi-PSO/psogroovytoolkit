@@ -30,7 +30,7 @@ class CreateTracks extends BaseCommand {
     private static final String SUCCESS = "SUCCESS";
     private static final String LEVEL = "Level";
     private static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyyMMdd HHmmss.SSS";
-    private static final String LEGACY_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HHmmss.SSS'Z'";
+    private static final String LEGACY_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private static final String EDIFACT = 'EDIFACT';
     private static final String TIMESTAMP = 'Timestamp';
     private static final String DURATION = 'DurationInMillis';
