@@ -56,7 +56,7 @@ class CreateTracksTests extends BaseTests {
 		JsonSlurper jsluper = new JsonSlurper();
 
 		def actualJson = jsluper.parseText(dataContext.getOutStreams()[0].getText());
-		assert actualJson.TrackCount == "4";
+		assert actualJson.TrackCount == "5";
 		assert actualJson.ErrorProcessesList.size() == 3;
 		assert actualJson.FolderList.size() == 3;
 		assert actualJson.TrackedFieldNames.size() == 3;

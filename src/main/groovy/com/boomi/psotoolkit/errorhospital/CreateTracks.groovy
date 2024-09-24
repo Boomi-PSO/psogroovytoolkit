@@ -8,6 +8,7 @@ import org.codehaus.groovy.runtime.ReverseListIterator
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.zip.Inflater
 
 class CreateTracks extends BaseCommand {
@@ -29,6 +30,7 @@ class CreateTracks extends BaseCommand {
     private static final String SUCCESS = "SUCCESS";
     private static final String LEVEL = "Level";
     private static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyyMMdd HHmmss.SSS";
+    private static final String LEGACY_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HHmmss.SSS'Z'";
     private static final String EDIFACT = 'EDIFACT';
     private static final String TIMESTAMP = 'Timestamp';
     private static final String DURATION = 'DurationInMillis';
@@ -206,7 +208,7 @@ class CreateTracks extends BaseCommand {
         List<Map<String, String>> logEntries = [];
         Map<String, String> logEntry = [:] as Map;
         logEntry.put(INTERNAL_ID, auditLog.Auditlogitem[0].Id);
-        logEntry.put(TIMESTAMP, auditLog.Auditlogitem[0].Timestamp);
+        logEntry.put(TIMESTAMP, getTimestamp(auditLog.Auditlogitem[0].Timestamp));
         logEntry.put(LEVEL, auditLog.Auditlogitem[0].Level);
         if (auditLog.Auditlogitem[0].Level == ERROR) {
             alertCount++;
@@ -306,12 +308,13 @@ class CreateTracks extends BaseCommand {
     private void addTimestampAndDuration(def auditLog, Map trackEntry) {
         int auditLogSize = auditLog?.Auditlogitem.size();
         if (auditLogSize) {
-            String firstTimestamp = auditLog.Auditlogitem[0].Timestamp;
-            LocalDateTime firstldt = LocalDateTime.parse(firstTimestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-            String lastTimestamp = auditLog.Auditlogitem[auditLogSize - 1].Timestamp;
-            LocalDateTime lastldt = LocalDateTime.parse(lastTimestamp, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN));
-            trackEntry.put(TIMESTAMP, firstTimestamp);
+            String firstTimestamp = getTimestamp(auditLog.Auditlogitem[0].Timestamp);
+            String lastTimestamp = getTimestamp(auditLog.Auditlogitem[auditLogSize - 1].Timestamp);
+            DateTimeFormatter defaultFormatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN);
+            LocalDateTime firstldt = LocalDateTime.parse(firstTimestamp, defaultFormatter);
+            LocalDateTime lastldt = LocalDateTime.parse(lastTimestamp, defaultFormatter)
             trackEntry.put(DURATION, Duration.between(firstldt, lastldt).toMillis());
+            trackEntry.put(TIMESTAMP, firstTimestamp);
         }
     }
     // Add Dynamic Document Property Fields
@@ -333,7 +336,7 @@ class CreateTracks extends BaseCommand {
     // Add audit Log Item Fields
     private void addAuditLogItemDetails(def auditLogItem, Map<String, String> logEntry) {
         logEntry.put(INTERNAL_ID, auditLogItem.Id);
-        logEntry.put(TIMESTAMP, auditLogItem.Timestamp);
+        logEntry.put(TIMESTAMP, getTimestamp(auditLogItem.Timestamp));
         if (LOG.equals(auditLogItem.get(LEVEL))) {
             logEntry.put(LEVEL, TRACK);
             logEntry.put(HAS_ERRORS, NO);
@@ -384,5 +387,21 @@ class CreateTracks extends BaseCommand {
         } else {
             return input?.indexOf(substring, nthIndexOf(input, substring, nth - 1) + substring.length());
         }
+    }
+    // try to parse the date with default, then legacy date formats - return the date string in default format
+    private String getTimestamp(String datetime) {
+        LocalDateTime localDateTime;
+        String timestamp;
+        DateTimeFormatter defaultFormatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN);
+        try {
+            LocalDateTime.parse(datetime, defaultFormatter);
+            timestamp = datetime;
+        }
+        catch (DateTimeParseException dtpe) {
+            // Try the legacy dateformat, otherwise let it fail
+            localDateTime = LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern(LEGACY_DATE_FORMAT_PATTERN));
+            timestamp = localDateTime.format(defaultFormatter);
+        }
+        return timestamp;
     }
 }
