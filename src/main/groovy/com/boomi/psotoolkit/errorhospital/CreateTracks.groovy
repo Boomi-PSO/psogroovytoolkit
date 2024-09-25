@@ -29,8 +29,6 @@ class CreateTracks extends BaseCommand {
     private static final String NOTIFIED = "NOTIFIED";
     private static final String SUCCESS = "SUCCESS";
     private static final String LEVEL = "Level";
-    private static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyyMMdd HHmmss.SSS";
-    private static final String LEGACY_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private static final String EDIFACT = 'EDIFACT';
     private static final String TIMESTAMP = 'Timestamp';
     private static final String DURATION = 'DurationInMillis';
@@ -68,6 +66,9 @@ class CreateTracks extends BaseCommand {
     private static final String TRACKED_FIELDS_SPLIT_REGEX = ',|#';
     private static final String COMMA = ',';
     private static final String TRUNCATED_NOTIFICATION_WARNING = "WARNING: Error Message contains the truncated process notification!";
+    // Constant date formatters
+    private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss.SSS");
+    private static final DateTimeFormatter LEGACY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     CreateTracks(Object dataContext) {
         super(dataContext);
@@ -310,9 +311,8 @@ class CreateTracks extends BaseCommand {
         if (auditLogSize) {
             String firstTimestamp = getTimestamp(auditLog.Auditlogitem[0].Timestamp);
             String lastTimestamp = getTimestamp(auditLog.Auditlogitem[auditLogSize - 1].Timestamp);
-            DateTimeFormatter defaultFormatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN);
-            LocalDateTime firstldt = LocalDateTime.parse(firstTimestamp, defaultFormatter);
-            LocalDateTime lastldt = LocalDateTime.parse(lastTimestamp, defaultFormatter)
+            LocalDateTime firstldt = LocalDateTime.parse(firstTimestamp, DEFAULT_FORMATTER);
+            LocalDateTime lastldt = LocalDateTime.parse(lastTimestamp, DEFAULT_FORMATTER)
             trackEntry.put(DURATION, Duration.between(firstldt, lastldt).toMillis());
             trackEntry.put(TIMESTAMP, firstTimestamp);
         }
@@ -392,15 +392,14 @@ class CreateTracks extends BaseCommand {
     private String getTimestamp(String datetime) {
         LocalDateTime localDateTime;
         String timestamp;
-        DateTimeFormatter defaultFormatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT_PATTERN);
         try {
-            LocalDateTime.parse(datetime, defaultFormatter);
+            LocalDateTime.parse(datetime, DEFAULT_FORMATTER);
             timestamp = datetime;
         }
         catch (DateTimeParseException dtpe) {
-            // Try the legacy dateformat, otherwise let it fail
-            localDateTime = LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern(LEGACY_DATE_FORMAT_PATTERN));
-            timestamp = localDateTime.format(defaultFormatter);
+            // Try the legacy date format, otherwise let it fail
+            localDateTime = LocalDateTime.parse(datetime, LEGACY_FORMATTER);
+            timestamp = localDateTime.format(DEFAULT_FORMATTER);
         }
         return timestamp;
     }
