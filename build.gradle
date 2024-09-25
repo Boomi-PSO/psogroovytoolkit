@@ -27,7 +27,7 @@ compileTestGroovy {
     targetCompatibility = '1.8'
 }
 
-version = '0.0.5'
+version = '1.0.0'
 
 repositories {
 	mavenCentral()
@@ -68,7 +68,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.boomi.psotoolkit'
             artifactId = 'psogroovytoolkit'
-            version = '0.0.5'
+            version = '1.0.0'
             from components.java
         }
     }
