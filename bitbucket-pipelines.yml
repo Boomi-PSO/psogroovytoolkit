@@ -12,6 +12,12 @@ definitions:
         artifacts:
           - build/libs/**
           - build/reports/**
+    - step: &build-and-test-verbose
+        name: Build and test verbose
+        caches:
+          - gradle
+        script:
+          - ./gradlew build --info
     - step: &deploy-jar-downloads
         name: Deploy Jar to Bitbucket Downloads
         script:
@@ -31,3 +37,5 @@ pipelines:
       - step: *deploy-jar-downloads
     02. build-only:
       - step: *build-and-test
+    03. build-only-verbose:
+      - step: *build-and-test-verbose
