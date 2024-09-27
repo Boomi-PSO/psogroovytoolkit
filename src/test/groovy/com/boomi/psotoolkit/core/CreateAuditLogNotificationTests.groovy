@@ -205,7 +205,7 @@ class CreateAuditLogNotificationTests extends BaseTests {
 	void testSuccessAndCompress() {
 		def dataContext = setupDataContextFromFolder("src/test/resources/com/boomi/psotoolkit/core/createauditlognotification");
 
-		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_AUDITLOG_SIZE_MAX, "900");
+		ExecutionUtil.dynamicProcessProperties.put(DPP_FWK_AUDITLOG_SIZE_MAX, "915");
 		LocalDateTime now = LocalDateTime.now();
 
 		new CreateAuditLogNotification(dataContext).executeWithoutFilterSortCombine();
