@@ -10,7 +10,7 @@ definitions:
         script:
           - ./gradlew build
         artifacts:
-          - build/libs/**
+          - build/libs/*.jar
           - build/reports/**
     - step: &build-and-test-verbose
         name: Build and test verbose
@@ -21,11 +21,11 @@ definitions:
     - step: &deploy-jar-downloads
         name: Deploy Jar to Bitbucket Downloads
         script:
-          - pipe: atlassian/bitbucket-upload-file:0.1.2
+          - pipe: atlassian/bitbucket-upload-file:0.7.3
             variables:
               BITBUCKET_USERNAME: $BITBUCKET_USERNAME
               BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-              FILENAME: 'build/libs/*'
+              FILENAME: 'build/libs/*.jar'
 pipelines:
   branches:
     main:
