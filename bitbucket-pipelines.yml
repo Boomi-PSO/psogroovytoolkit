@@ -1,0 +1,33 @@
+#  Gradle build
+image: gradle:6.6.0
+
+definitions:
+  steps:
+    - step: &build-and-test
+        name: Build and test
+        caches:
+          - gradle
+        script:
+          - ./gradlew build
+        artifacts:
+          - build/libs/**
+          - build/reports/**
+    - step: &deploy-jar-downloads
+        name: Deploy Jar to Bitbucket Downloads
+        script:
+          - pipe: atlassian/bitbucket-upload-file:0.1.2
+            variables:
+              BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+              BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+              FILENAME: 'build/libs/*'
+pipelines:
+  branches:
+    main:
+      - step: *build-and-test
+      - step: *deploy-jar-downloads
+  custom:
+    01. build-and-deploy:
+      - step: *build-and-test
+      - step: *deploy-jar-downloads
+    02. build-only:
+      - step: *build-and-test
